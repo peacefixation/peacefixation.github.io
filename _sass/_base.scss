@@ -29,7 +29,15 @@ body {
     -o-font-feature-settings: "kern" 1;
     font-feature-settings: "kern" 1;
     font-kerning: normal;
-    margin-bottom: 120px;
+    margin-bottom: 160px;
+    
+    @include media-query($on-laptop) {
+        margin-bottom: 200px;
+    }
+    
+    @include media-query($on-palm) {
+        margin-bottom: 260px;
+    }
 }
 
 
