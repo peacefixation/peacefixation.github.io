@@ -7,7 +7,7 @@
 
 # Site settings
 title: "Matthew Jarvis"
-email: mattjarvis@internode.on.net
+email: 
 description: > # this means to ignore newlines until "baseurl:"
     My name is Matthew Jarvis, I’m a developer at mVoice. I work with Java EE, Linux and Asterisk VoIP server for the most part, and dabble in various other technologies as the need arises.
 baseurl: "" # the subpath of your site, e.g. /blog
