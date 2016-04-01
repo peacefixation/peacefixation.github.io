@@ -1,10 +1,10 @@
 - name: Math ∩ Programming
   url: http://jeremykun.com/
-  description: An interesting personal blog about Math and Programming
+  description: An interesting personal blog about math and programming
 
 - name: MathBlog
   url: http://www.mathblog.dk/
-  description: Another interesting personal blog about Math and Programming
+  description: Another interesting personal blog about math and programming including many Project Euler solutions and helpful explanations!
 
 - name: D3.js
   url: https://d3js.org/
