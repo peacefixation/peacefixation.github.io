@@ -7,7 +7,7 @@ categories: development
 
 I recently started using the new [Brackets](http://brackets.io/) text editor. Brackets is a powerful text editor in much the same vein as Sublime with nice programming features and support for extensions.
 
-Among the files that I edit are Asterisk configuration files. Asterisk is a VoIP server, and these are the files that tell Asterisk how to route VoIP calls. They have their own special syntax, different enough that none of the included syntax highlighters were much use. Now I hate editing files without syntax highlighting, so I began to investigate how to write an extension for Brackets that would make my Asterisk dialplan editing easier.
+Among the files that I edit are Asterisk configuration files. Asterisk is a VoIP server, and these are the files that tell Asterisk how to route VoIP calls. They have their own special syntax, different enough that none of the included syntax highlighters were much use. I prefer editing files with syntax highlighting as it reduces the cognitive load and helps me to navigate the file more quickly, so I began to investigate how to write an extension for Brackets that would make my Asterisk dialplan editing easier.
 
 As it turns out it's not so hard and there's a [How To Write Extensions](https://github.com/adobe/brackets/wiki/How-to-Write-Extensions) guide on the Brackets Github repo. Of particular interest is the [Language Support](https://github.com/adobe/brackets/wiki/Language-Support) section. Here I discovered that Brackets actually leverages the Code Mirror syntax highlighters, and since there's already an Asterisk language mode there, I could just reference that and be on my way. Well, almost. So here's how I made the extension.
 
