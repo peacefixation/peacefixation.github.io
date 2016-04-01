@@ -19,25 +19,26 @@
     margin-bottom: 0;
     float: left;
     text-decoration: none;
+    color: $dark-grey;
 
     &,
     &:visited,
     &:hover {
         text-decoration: none;
+        color: $dark-grey;
     }
 }
 
 .site-nav {
     float: right;
     line-height: 56px;
-    z-index: 10;
 
     .menu-icon {
         display: none;
     }
 
     .page-link {
-        display: none;
+        color: $light-red;
         line-height: $base-line-height;
 
         // Gaps between nav items, but not on the last one
@@ -83,7 +84,7 @@
             display: block;
             padding-bottom: 5px;
         }
-        
+
         .page-link {
             display: block;
             padding: 5px 10px;
@@ -102,31 +103,7 @@
  */
 
 #content {
-    float: left;
-    width: 80%;
-    
-    @include media-query($on-palm) {
-        width: 100%;   
-    }
-}
-
-#side-bar {
-    float: right;
-    width: 20%;
-    
-    @include media-query($on-palm) {
-        display: none;
-    }
-}
-
-#category-header {
-    text-align: right;
-}
-
-#category-menu {
-    list-style-type: none;
-    margin: 0;
-    text-align: right;
+    width: 100%;
 }
 
 /**

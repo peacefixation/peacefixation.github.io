@@ -1,0 +1,31 @@
+---
+layout: page
+title: Categories
+permalink: /categories/
+---
+
+{% assign sorted_categories = site.categories | sort %}
+
+{% for category in sorted_categories %}
+
+    {% assign cat_name = category[0] %}
+    {% assign cat_pages = category[1] %}
+    {% assign num_pages = 0 %}
+
+    {% for cat_page in cat_pages %}
+
+        {% assign num_pages = num_pages | plus: 1 %}
+
+    {% endfor %}
+
+    <a href="{{site.url}}/{{cat_name}}"><h4>{{ cat_name }}  ({{num_pages}})</h4></a>
+    <ul>
+        {% for cat_page in cat_pages %}
+
+            <li><a href="{{site.url}}/{{cat_page.url}}">{{cat_page.title}}</a></li>
+
+        {% endfor %}
+    </ul>
+    
+
+{% endfor %}

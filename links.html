@@ -1,0 +1,18 @@
+---
+layout: page
+title: Links
+permalink: /links/
+---
+
+<p>These are some websites that I personally enjoy. You might find something that interests you. They're mostly related to programming, mostly.</p>
+
+{% assign sorted_links = site.data.links | sort:"name" %}
+
+{% for link in sorted_links %}
+
+    <a href="{{link.url}}">
+        <h4>{{link.name}}</h4>
+    </a>
+    <p>{{link.description}}</p>
+
+{% endfor %}

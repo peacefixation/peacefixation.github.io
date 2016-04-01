@@ -1,0 +1,19 @@
+- name: Math ∩ Programming
+  url: http://jeremykun.com/
+  description: An interesting personal blog about Math and Programming
+
+- name: MathBlog
+  url: http://www.mathblog.dk/
+  description: Another interesting personal blog about Math and Programming
+
+- name: D3.js
+  url: https://d3js.org/
+  description: A powerful JavaScript library for performing DOM manipulations based on data. Widely used to create graphs and other data visulations.
+  
+- name: Learn you a Haskell for great good!
+  url: http://learnyouahaskell.com/
+  description: An online Haskell book  written in a casual style that is fun and easy to follow.
+  
+- name: Project Euler
+  url: https://projecteuler.net
+  description: Programming problems with an Eulieran bent, ranging from fairly easy through to mind bogglingly difficult.
