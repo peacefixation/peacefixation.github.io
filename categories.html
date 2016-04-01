@@ -22,7 +22,7 @@ permalink: /categories/
     <ul>
         {% for cat_page in cat_pages %}
 
-            <li><a href="{{site.url}}/{{cat_page.url}}">{{cat_page.title}}</a></li>
+            <li><a href="{{site.url}}{{cat_page.url}}">{{cat_page.title}}</a></li>
 
         {% endfor %}
     </ul>
