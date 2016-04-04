@@ -36,14 +36,12 @@ define(function (require, exports, module) {
 });
 {% endhighlight %}
 
-While you're hacking on your extension you can reload the extension in Brackets, `Debug > Reload With Extensions`. There's a lot more information on debugging in the Brackets guide, so I won't replicate that here.
+While you're hacking away you can reload changes to the extension from the Brackets menu `Debug > Reload With Extensions`. There's a lot more information on debugging in the Brackets extension guide, so I won't replicate that here.
 
-When you're ready to publish your extension, you need to create a `package.json` file. Refer to the [guide](https://github.com/adobe/brackets/wiki/Extension-package-format#packagejson-format).
+When you're ready to publish your opus, you need to create a `package.json` file. Refer to the Brackets extension guide for an [example](https://github.com/adobe/brackets/wiki/Extension-package-format#packagejson-format).
 
-Then package your extension files in a `.zip` archive.
+Then package your extension files in a `.zip` archive and upload it to the [Brackets Extension Registry](https://brackets-registry.aboutweb.com/).
 
-And upload it to the [Brackets Extension Registry](https://brackets-registry.aboutweb.com/).
-
-Your extension will now be available from `File > Extension Manager`, and viola, you're done, pro Brackets extension developer!
+Your extension will now be available from the Brackets menu `File > Extension Manager`, and viola, you're done!
 
 You can see the code for this little extension on my [Github repo](https://github.com/peacefixation/AsteriskSyntaxHighlighting).
