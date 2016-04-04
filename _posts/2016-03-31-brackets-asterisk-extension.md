@@ -5,7 +5,7 @@ date:   2016-03-31 12:46:37 +1100
 categories: development
 ---
 
-I recently started using the new [Brackets](http://brackets.io/) text editor. Brackets is a powerful text editor in much the same vein as Sublime with nice programming features and support for extensions.
+I recently started using the [Brackets](http://brackets.io/) text editor. Brackets is a powerful text editor in much the same vein as Sublime with nice programming features and support for extensions.
 
 Among the files that I edit are Asterisk configuration files. Asterisk is a VoIP server, and these are the files that tell Asterisk how to route VoIP calls. They have their own special syntax, different enough that none of the included syntax highlighters were much use. I prefer editing files with syntax highlighting as it reduces the cognitive load and helps me to navigate the file more quickly, so I began to investigate how to write an extension for Brackets that would make my Asterisk dialplan editing easier.
 
