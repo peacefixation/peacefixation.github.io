@@ -13,7 +13,15 @@
 - name: Learn you a Haskell for great good!
   url: http://learnyouahaskell.com/
   description: An online Haskell book  written in a casual style that is fun and easy to follow.
-  
+
+- name: Real World Haskell
+  url: http://book.realworldhaskell.org/
+  description: Another faily comprehensive Haskell book with a free online version.
+
 - name: Project Euler
   url: https://projecteuler.net
   description: Programming problems with an Eulerian bent, ranging from fairly easy through to mind bogglingly difficult.
+  
+- name: "High-Precision Deep Zoom"
+  url: http://www.hpdz.net/
+  description: Gallery of amazing fractal images, and a technical guide to help create your own.
