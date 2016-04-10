@@ -10,9 +10,9 @@ permalink: /links/
 
 {% for link in sorted_links %}
 
-    <a href="{{link.url}}">
-        <h4>{{link.name}}</h4>
-    </a>
+    <h4>
+        <a href="{{link.url}}">{{link.name}}</a>
+    </h4>
     <p>{{link.description}}</p>
 
 {% endfor %}
