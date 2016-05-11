@@ -48,10 +48,10 @@ Alternatively you can compile it:
 * type `ghc --make tip.hs` to compile the program
 * type `tip.exe` (or `./tip` depending on your environment) to run the program
 
-This exercise stretched me further than I had read in either of the tutorials, so I had to scrap around a bit and learn how to do basic IO (monads).
+This exercise stretched me further than I had read in either of the tutorials, so I had to scrap around a bit and learn how to do basic IO (monads). So how does it work? Well ...
 
-I import the System.IO library. I didn't realise this at first, but the input and output were buffered by default and all of the calls to `PutStr` were being printed at once which was undesirable, so I'm going to disable buffering for `stdout` and `stdin`.
+I import the `System.IO` library. I didn't realise this at first, but the input and output were buffered by default and all of the calls to `PutStr` were being printed at once which was undesirable, so I'm going to disable buffering for `stdout` and `stdin` and for that I need `System.IO`.
 
-I define a function called `main` that executes a sequence of actions in a `do` block. I disable buffering for `stdout` and `stdin` as I mentioned earlier. The program prompts for the bill amount and the tip rate and stores the input. I use `read` to convert the input from a `String` to a `Float`. Then I calculate the tip, and the total, and write them out to the console using `++` to concatenate and `show` to convert the `Float` value to a `String`.
+I define a function called `main` that executes a sequence of actions in a `do` block. I disable buffering for `stdout` and `stdin` as previously mentioned. The program prompts for the bill amount and the tip rate and stores the input. I use `read` to convert the input from a `String` to a `Float`. Then I calculate the tip and the total and write them out to the console using `++` to concatenate and `show` to convert the `Float` value to a `String`.
 
-There's no error checking, it will throw an exception is the input `String` can't be parsed to a `Float`, and probably again if the `Float` overflows. Oh, and I don't print the values out with 2 decimal places. There's nothing particularly functional about it either, but that right there is my first Haskell program and I'm a little chuffed!
+It's a bit rough, I admit it. There's no error checking, `read` will throw an exception if the input `String` can't be parsed to a `Float`. Strange things might happen if the `Float`s overflow. I don't print the values out with 2 decimal places, and there's nothing particularly functional about any of it, but that right there is my first Haskell program and I'm a little chuffed!
