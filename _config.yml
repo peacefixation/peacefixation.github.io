@@ -19,3 +19,6 @@ stackoverflow_username: matt
 # Build settings
 markdown: kramdown
 highlighter: rouge
+
+gems:
+  - jekyll-sitemap
