@@ -18,11 +18,11 @@ permalink: /categories/
 
     {% endfor %}
 
-    <a href="{{site.url}}/{{cat_name}}"><h4>{{ cat_name | capitalize }}  ({{num_pages}})</h4></a>
+    <a href="{{site.baseurl}}/{{cat_name}}"><h4>{{ cat_name | capitalize }}  ({{num_pages}})</h4></a>
     <ul>
         {% for cat_page in cat_pages %}
 
-            <li><a href="{{site.url}}{{cat_page.url}}">{{cat_page.title}}</a></li>
+            <li><a href="{{site.baseurl}}{{cat_page.url}}">{{cat_page.title}}</a></li>
 
         {% endfor %}
     </ul>

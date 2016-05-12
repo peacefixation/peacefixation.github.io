@@ -11,7 +11,7 @@ email:
 description: > # this means to ignore newlines until "baseurl:"
     My name is Matthew Jarvis, I'm a Java developer by day, and a curious programmer otherwise.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://localhost:4000" # the base hostname & protocol for your site
+url: "http://peacefixation.github.io" # the base hostname & protocol for your site
 twitter_username:
 github_username:  peacefixation
 stackoverflow_username: matt
