@@ -13,7 +13,7 @@ So without further ado, here is the first question in the book, and my first pro
 
 > Create a simple tip calculator. The program should prompt for a bill amount and a tip rate. The program must compute the tip and display both the tip and the total amount of the bill.
 
-{% highlight js %}
+{% highlight hs %}
 import System.IO
 
 main = do
