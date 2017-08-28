@@ -73,7 +73,7 @@ Here's an example of a much more complicated match on a variable that can contai
         </array>
     </dict>
 
-I found the [TextMate manual](http://manual.macromates.com/en/) and the [Sublime scope naming page](https://www.sublimetext.com/docs/3/scope_naming.html) very helpful. I also dug out the colour theme definitions inside the VS Code folder to see which scopes the themes were targetting for highlighting. I ended up choosing some scopes that were semantically incorrect, but resulted in a better highlight across multiple themes. I don't feel particularly good about that, but at the end of the day, better highlighting means faster Asterisk dialplan development, so I compromised on correctness. 
+I found the [TextMate manual](http://manual.macromates.com/en/) and the [Sublime scope naming page](https://www.sublimetext.com/docs/3/scope_naming.html) very helpful. I also dug out the colour theme definitions inside the VS Code folder to see which scopes the included themes target for highlighting. I ended up choosing some scopes that were semantically incorrect, but resulted in a better highlight across multiple themes. I don't feel particularly good about that, but at the end of the day, better highlighting means faster Asterisk dialplan development, so I compromised on correctness.
 
 Publishing the extension was simple, but you do need to create a Visual Studio Team System (VSTS) account in order to generate a `Personal Access Token`. The [documentation](https://code.visualstudio.com/docs/extensions/publish-extension) walks you through the process. Once you have your token, publish the extension by running `vsce publish -p <token>` and you're done!
 
