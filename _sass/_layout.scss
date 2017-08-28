@@ -8,7 +8,7 @@
     // Positioning context for the mobile navigation icon
     position: relative;
     
-    background-color: $light-blue;
+    background-color: black;
 }
 
 .site-title {
@@ -19,13 +19,13 @@
     margin-bottom: 0;
     float: left;
     text-decoration: none;
-    color: $light-red;
+    color: $light-grey;
 
     &,
     &:visited,
     &:hover {
         text-decoration: none;
-        color: $light-red;
+        color: $light-grey;
     }
 }
 
@@ -38,7 +38,7 @@
     }
 
     .page-link {
-        color: $light-red;
+        color: $light-grey;
         line-height: $base-line-height;
 
         // Gaps between nav items, but not on the last one
@@ -112,7 +112,7 @@
 .site-footer {
     border-top: 1px solid $grey-color-light;
     padding: $spacing-unit 0;
-    background-color: $light-blue;
+    background-color: $dark-grey;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -128,6 +128,20 @@
 .social-media-list {
     list-style: none;
     margin-left: 0;
+
+    a {
+        color: $light-grey;
+        text-decoration: none;
+    
+        &:visited {
+            color: $light-grey;
+        }
+    
+        &:hover {
+            color: $light-grey;
+            text-decoration: underline;
+        }
+    }
 }
 
 .footer-col-wrapper {

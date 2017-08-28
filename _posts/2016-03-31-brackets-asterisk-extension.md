@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Syntax highlighting extension for Brackets"
+title:  "Asterisk syntax highlighting extension for Brackets"
 date:   2016-03-31 12:46:37 +1100
 categories: development
 ---
@@ -42,4 +42,4 @@ Then package your extension files in a `.zip` archive and upload it to the [Brac
 
 Your extension will now be available from the Brackets menu `File > Extension Manager`, and viola, you're done!
 
-You can see the code for this little extension on my [Github repo](https://github.com/peacefixation/AsteriskSyntaxHighlighting).
+You can see the code for this little extension on [Github](https://github.com/peacefixation/AsteriskSyntaxHighlighting).
