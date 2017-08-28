@@ -5,7 +5,7 @@ date:   2017-08-27 18:00:00:00 +1000
 categories: development
 ---
 
-I've started using Microsoft's new [Visual Studio Code](https://code.visualstudio.com/) text editor at work and it's pretty neat. I like it more than Brackets, which I was using before. It's similar, but more polished and has some really nice features like an integrated terminal and a debugger. As you might expect there's a comprehensive extension repository, but once again, there was no syntax highlighter for Asterisk dialplan code. I took it upon myself to fill the void and wrote one myself. This time around there was no existing syntax grammar for me to use, so this was a much bigger project than the Brackets extension I wrote last year, and I learned a lot more.
+I've started using Microsoft's new [Visual Studio Code](https://code.visualstudio.com/) text editor at work and it's pretty neat. I like it more than Brackets, which I was using before. It's similar, but more polished and has some really nice features like an integrated terminal and a debugger. As you might expect there's a comprehensive extension repository, but once again, there was no syntax highlighter for Asterisk dialplan code so I took it upon myself to fill the void and wrote one. This time around there was no existing syntax grammar for me to use, so this was a much bigger project than the Brackets extension I wrote last year, and I learned a lot more.
 
 If you'd like to make your own extension I'd recommend following the [extensive documentation](https://code.visualstudio.com/docs/extensions/overview) to get started, it's all explained very well and I won't repeat it. You can `npm install` Yeoman and the VS Code Extension Generator to create the boiler plate including a howto reference which is nice to have on hand.
 
@@ -30,7 +30,7 @@ Here's an example of a simple match for a file import declaration like `#include
         <string>keyword.control.import</string>
     </dict>
 
-Here's an example of a much more complicated match on a variable that can contain a nested variable `${CHANNEL_${MAX_CHANNELS}}`, or a nested function `${CDR(accoundcode)}`. They key to effectively writing this match was capturing the open and closing parts, then capturing the nested function and including a match on `$self` for nested variables before finally matching on the rest of the inner text with a match on anything that isn't the closing part.
+Here's an example of a much more complicated match on a variable that can contain a nested variable `${CHANNEL_${MAX_CHANNELS}}`, or a nested function `${CDR(accountcode)}`. They key to effectively writing this match was capturing the open and closing parts, then capturing the nested function and including a match on `$self` for nested variables before finally matching on the rest of the inner text with a match on anything that isn't the closing part.
 
     <key>VariableNested</key>
     <dict>
