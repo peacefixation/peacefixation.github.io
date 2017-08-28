@@ -21,7 +21,7 @@ Creating the regexes for the Asterisk dialplan grammar was equal parts easy and 
 
 Matching keywords, or a variable definition, or a function call was pretty easy. It was harder to match a variable inside a quoted string inside a function call, but it was all possible, and after some trial and error I have it working quite nicely.
 
-Here's an example of a simple match for a file import:
+Here's an example of a simple match for a file import declaration like `#include extensions.conf`.
 
     <dict>
         <key>match</key>
@@ -30,7 +30,7 @@ Here's an example of a simple match for a file import:
         <string>keyword.control.import</string>
     </dict>
 
-Here's an example of a much more complicated match on a variable that can contain a nested variable, or a function (that can also have nested entities). They key to effectively writing this match was capturing the open and closing parts, then capturing the nested function and including a match on `$self` for nested variables before finally matching anything that isn't the closing part.
+Here's an example of a much more complicated match on a variable that can contain a nested variable `${CHANNEL_${MAX_CHANNELS}}`, or a nested function `${CDR(accoundcode)}`. They key to effectively writing this match was capturing the open and closing parts, then capturing the nested function and including a match on `$self` for nested variables before finally matching on the rest of the inner text with a match on anything that isn't the closing part.
 
     <key>VariableNested</key>
     <dict>
@@ -73,8 +73,8 @@ Here's an example of a much more complicated match on a variable that can contai
         </array>
     </dict>
 
-I had a lot of help from the [TextMate manual](http://manual.macromates.com/en/), and the [Sublime scope naming page](https://www.sublimetext.com/docs/3/scope_naming.html). I also found it quite useful to dig out the colour theme definitions inside the VS Code folder to see which scopes the themes were targetting for highlighting. I ended up choosing some scopes that were semantically incorrect, but resulted in a better highlight across multiple themes. I don't feel particularly good about that, but at the end of the day, better highlighting means faster Asterisk dialplan development, so I compromised on correctness. 
+I found the [TextMate manual](http://manual.macromates.com/en/) and the [Sublime scope naming page](https://www.sublimetext.com/docs/3/scope_naming.html) very helpful. I also dug out the colour theme definitions inside the VS Code folder to see which scopes the themes were targetting for highlighting. I ended up choosing some scopes that were semantically incorrect, but resulted in a better highlight across multiple themes. I don't feel particularly good about that, but at the end of the day, better highlighting means faster Asterisk dialplan development, so I compromised on correctness. 
 
-Publishing the extension was simple, but you do need to create a Visual Studio Team System (VSTS) account in order to generate a `Personal Access Token`. The [documenation](https://code.visualstudio.com/docs/extensions/publish-extension) walks you through the process. Once you have your token, publish the extension by running `vsce publish -p <token>` and you're done!
+Publishing the extension was simple, but you do need to create a Visual Studio Team System (VSTS) account in order to generate a `Personal Access Token`. The [documentation](https://code.visualstudio.com/docs/extensions/publish-extension) walks you through the process. Once you have your token, publish the extension by running `vsce publish -p <token>` and you're done!
 
 You can see the full extension code on [Github](https://github.com/peacefixation/asterisk-vscode).
