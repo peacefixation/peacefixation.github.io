@@ -5,7 +5,7 @@ date:   2016-05-26 12:51:12 +1100
 categories: haskell
 ---
 
-It's time for some more Haskell. I'm going to work through chapter 2 of [Exercises for Programmers: 57 Challenges to Develop Your Coding Skills](http://amzn.to/1T8eFEw) and see what happens.
+It's time for some more Haskell. I'm going to work through chapter 2 of [Exercises for Programmers: 57 Challenges to Develop Your Coding Skills](https://www.amazon.com/Exercises-Programmers-Challenges-Develop-Coding/dp/1680501224) and see what happens.
 
 # Saying Hello
 
@@ -28,7 +28,7 @@ main = do
     putStrLn (greeting)
 {% endhighlight %}
 
-Well, that was simpler than my first program, and there's nothing new to mention, so I'll move straight on to the first challenge.
+Well, that was simpler than my first program and there's nothing new to mention so I'll move straight on to the first challenge.
 
 > Write a new version of the program without using any variables
 
@@ -47,7 +47,7 @@ main = do
     putStrLn (greet name)
 {% endhighlight %}
 
-I thought about this for a while, and I would like to solve it by writing functions and combining them. I can write a function `greet` to concatenate the name and greeting, but I'm not sure how to write the function that prints the question and returns the name that the user enters as a `String` instead of an `IO String`, so I'm still using one variable that binds to the value that `GetLine` produces. I'll come back to this once I learn some more about monads.
+I thought about this for a while and I would like to solve it by writing functions and combining them. I can write a function `greet` to concatenate the name and greeting but I'm not sure how to write the function that prints the question and returns the name that the user enters as a `String` instead of an `IO String`, so I'm still using one variable that binds to the value that `GetLine` produces. I'll come back to this once I learn some more about monads.
 
 > Write a version of the program that displays different greetings for different people.
 
@@ -111,7 +111,7 @@ main = do
     prompt
 {% endhighlight %}
 
-Here I made a function called `prompt` that asks the user to input a string. If the length of the string is greater than 0 then I print the output, otherwise I recursively call `prompt` again to ask the user for input. I also saw how to use `hFlush stdout` when I need to flush the output, which is much nicer than the `hSetBuffering stdout NoBuffering` and `hSetBuffering stdin NoBuffering` I was doing before.
+Here I made a function called `prompt` that asks the user to input a string. If the length of the string is greater than 0 then I print the output, otherwise I recursively call `prompt` again to ask the user for input. I also saw how to use `hFlush stdout` when I need to flush the output which is much nicer than the `hSetBuffering stdout NoBuffering` and `hSetBuffering stdin NoBuffering` I was doing before.
 
 There is a third challenge to implement the program with a GUI, but I'm going to leave that for now until I learn some more Haskell!
 
@@ -155,9 +155,9 @@ main = do
     mapM_ printQuote quotes
 {% endhighlight %}
 
-This was an interesting modification. First I stored the quotes as a list of tuples with two `String` elements. Then I found the `mapM_` function that takes a data structure and a monadic action and applies the action to each element. So I wrote a little function called `printQuote` to take an (author, quote) tuple and print it with some formatting. Then in `main` I call `mapM_` with two arguments, my printing function and the list of quotes, and behold, the quotes are printed.
+This was an interesting modification. First I stored the quotes as a list of tuples with two `String` elements. Then I found the `mapM_` function that takes a data structure and a monadic action and applies the action to each element. I wrote a little function called `printQuote` to take an (author, quote) tuple and print it with some formatting. Then in `main` I call `mapM_` with two arguments, my printing function and the list of quotes, and behold, the quotes are printed.
 
-I feel like I've gone a little far without learning some more fundamentals at this stage, but the chapter is almost over, only one more program to write.
+I feel like I've gone a little too far without learning some more fundamentals at this stage, but the chapter is almost over, only one more program to write.
 
 # Mad Lib
 
@@ -190,5 +190,5 @@ main = do
 
 I found a `printf` function to do the string interpolation.
 
-There's a challenge to add more inputs to the program to expand the story, but I'm going to stop here and move on to the next chapter to work on some numeric problems and learn some more tricks before I try to write a larger program.
+There's a challenge to add more inputs to the program to expand the story but I'm going to stop here and move on to the next chapter to work on some numeric problems and learn some more tricks before I try to write a larger program.
 
