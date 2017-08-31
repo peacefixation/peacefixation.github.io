@@ -5,6 +5,7 @@ date:   2017-08-30 21:00:00 +1000
 categories: development
 ---
 
+I had a task today to pull out a bunch of account ids from a log file so we could email the customers. I needed to add an offset to these account ids to turn them into an account number. This is easy enough, but there were a lot of them, and it’s tedious to do by hand. Sure, you could use a spread sheet but that’s overkill, and it comes with its own caveats of importing and exporting the text data. Vim to the rescue!
 
 Given a file containing a list of numbers on consecutive lines, I want to add an offset of 10 to every number.
 
