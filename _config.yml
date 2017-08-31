@@ -6,10 +6,8 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: "Matthew Jarvis"
 email: 
 description: > # this means to ignore newlines until "baseurl:"
-    My name is Matthew Jarvis, I'm a Java developer by day, and a curious programmer otherwise.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://peacefixation.github.io" # the base hostname & protocol for your site
 twitter_username:
