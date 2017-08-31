@@ -19,19 +19,19 @@ Given a file containing a list of numbers on consecutive lines, I want to add an
 8<br />
 9<br />
 
-First a quick Vim refresher. Vim has modes. Normal mode is for navigation and text manipulation, everything you type is interpreted as a command. You can use commands like `gg` to go the start of the file, `G` to go to the end of the file, `$` to go to the end of the line, etc. You can return to Normal mode from another mode by pressing `ESC`. Command-line mode is for Vim commands. You enter Command-line mode by pressing `:`, then you enter your command. For example `:set nu` turns line numbering on. `:help  Command-line-mode` opens the help file for Command-line-mode. With that out of the way, we are going to record a macro and then execute it by running a normal mode command from Command-line mode with the `normal` command. Vim is complicated. :)
+First a quick Vim refresher. Vim has modes. Normal mode is for navigation and text manipulation, everything you type is interpreted as a command. You can use commands like `gg` to go the start of the file, `G` to go to the end of the file, `$` to go to the end of the line, etc. You can return to normal mode from another mode by pressing `ESC`. Command-line mode is for Vim commands. You enter command-line mode by pressing `:`, then you enter your command. For example `:set nu` turns line numbering on. `:help  command-line-mode` opens the help file for command-line-mode. With that out of the way, we are going to record a macro and then execute it by running a cormal mode command from command-line mode with the `normal` command. Vim is complicated. :)
 
 Create a file with the numbers 1-9 on consequtive lines. Press `ESC` to make sure we're in normal mode. Now we will record a macro called `a`:
 
-- press `qa` to start recording
+- type `qa` to start recording
 - type `10` and press `Ctrl-A` to increment the first number by 10
-- press `q` to stop recording
+- type `q` to stop recording
 
 You can use `:u` to undo the last command to revert that change, alternatively type `10` and press `Ctrl-X` to decrement the number by 10.
 
-Now we will apply the macro to every line in the file:
+Now we will apply the macro to every line in the file, from normal mode:
 
-- enter `:%normal! @a`
+- type `:%normal! @a`
 
 Let's dissect that command. 
 
