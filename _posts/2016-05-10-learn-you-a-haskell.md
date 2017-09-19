@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "My first Haskell program"
+title:  "Learn you a Haskell"
 date:   2016-05-10 15:26:12 +1100
 categories: haskell
 ---

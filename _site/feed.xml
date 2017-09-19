@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Matt Jarvis</title>
+    <description>I&#39;m a developer for a VoIP provider and do most of my work with Java and Asterisk. In my spare time I ride my mountain bike and listen to groovy music.
+</description>
+    <link>http://peacefixation.github.io/</link>
+    <atom:link href="http://peacefixation.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 19 Sep 2017 21:39:00 +1000</pubDate>
+    <lastBuildDate>Tue, 19 Sep 2017 21:39:00 +1000</lastBuildDate>
+    <generator>Jekyll v3.1.2</generator>
+    
+      <item>
+        <title>Clean SQL embedded in source files with Vim</title>
+        <description>&lt;p&gt;Here’s a task I do often, and it’s always a 2 step process. There’s a program I maintain that queries the database and the SQL is just a long series of concatenated strings in a source file. I copy the query into a text editor and then remove all the quotes and plus characters so I can modify and test it on the database. Ideally SQL would be kept in an SQL file and it would be easier to work with, but you don’t always get what you want.&lt;/p&gt;
+
+&lt;p&gt;Today I decided that Vim would help me by using the substitute command to clean my SQL. It turned out to be quite simple, the regex is an easy one but Vim has its own ideas about regex syntax. First a quick recap, the substitute command has the structure &lt;code class=&quot;highlighter-rouge&quot;&gt;:%s/pattern/replacement/flags&lt;/code&gt; where &lt;code class=&quot;highlighter-rouge&quot;&gt;pattern&lt;/code&gt; is the string to find (or a regex that matches it), &lt;code class=&quot;highlighter-rouge&quot;&gt;replacement&lt;/code&gt; is the replacement string and &lt;code class=&quot;highlighter-rouge&quot;&gt;flags&lt;/code&gt; are the regex flags (like &lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt; for global).&lt;/p&gt;
+
+&lt;p&gt;Here’s the SQL string that I pulled out of the source file:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;SELECT a.name, b.number &quot; +
+&quot;FROM table_a a &quot; +
+&quot;JOIN table_b b ON a.b_id = b.a_id &quot; +
+&quot;WHERE a.name LIKE &#39;% Smith&#39; &quot; +
+&quot;AND b.number &amp;gt; 100;&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And the substitute command I came up with to clean it:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;:%s/\(^\s*+\s*&quot;\)\|\(\s*&quot;\s*+\s*$\)//g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now you might notice that the regex syntax is a little odd. I’ve used parentheses and alternation to group my expressions but I had to escape the &lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;)&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt; characters, and &lt;strong&gt;not&lt;/strong&gt; escape the &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; character! This threw me but Vim regex syntax is pretty backwards! You can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;\v&lt;/code&gt; (magic flag) at the start of the pattern to invert this and I could shorten my command to:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;:%s/\v(^\s*\+?\s*&quot;)|(\s*&quot;\s*\+?\s*$)//g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Then I mapped this to a key command &lt;code class=&quot;highlighter-rouge&quot;&gt;,c&lt;/code&gt; in my &lt;code class=&quot;highlighter-rouge&quot;&gt;vimrc&lt;/code&gt; so I can run it easily (note the extra &lt;code class=&quot;highlighter-rouge&quot;&gt;\&lt;/code&gt; escape on the alternation character &lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt; is required when mapping the command):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;map ,c :%s/\v(^\s*\+?\s*&quot;)\|(\s*&quot;\s*\+?\s*$)//g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And there you have it, clean SQL ready to execute:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SELECT a.name, b.number
+FROM table_a a
+JOIN table_b b ON a.b_id = b.a_id
+WHERE a.name LIKE &#39;% Smith&#39;
+AND b.number &amp;gt; 100;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So it turns out that if you try sometimes, you just might find .. you get what you need! I will chalk up some more Vim experience, and give a little credit to this Stack Overflow &lt;a href=&quot;https://vi.stackexchange.com/questions/3115/find-and-replace-using-regular-expressions&quot;&gt;answer&lt;/a&gt; and the Vim tips &lt;a href=&quot;http://vim.wikia.com/wiki/Search_and_replace&quot;&gt;wiki page&lt;/a&gt; for the substitute command.&lt;/p&gt;
+
+&lt;p&gt;I’ve uploaded my fledgling &lt;code class=&quot;highlighter-rouge&quot;&gt;vimrc&lt;/code&gt; to &lt;a href=&quot;https://github.com/peacefixation/vimrc/blob/master/vimrc&quot;&gt;Github&lt;/a&gt;, may it grow larger and more useful in time!&lt;/p&gt;
+</description>
+        <pubDate>Mon, 11 Sep 2017 19:41:00 +1000</pubDate>
+        <link>http://peacefixation.github.io/development/2017/09/11/vim-clean-embedded-SQL.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/development/2017/09/11/vim-clean-embedded-SQL.html</guid>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>Follow Me</title>
+        <description>&lt;p&gt;I made a DJ mix a while ago that I’m still quite fond of. I put it together using Ableton software and it captures a sound that I used to play around with a lot on my turntables; techno, a little leftfield, a bit wonky, melodic, abrasive, with a steady, heavy groove and a few really frilly bits. Listening to it now sure takes me back!&lt;/p&gt;
+
+&lt;p&gt;I’ll post it here for posterity. :)&lt;/p&gt;
+
+&lt;iframe width=&quot;100%&quot; height=&quot;450&quot; scrolling=&quot;no&quot; frameborder=&quot;no&quot; src=&quot;https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6416654&amp;amp;color=ff5500&amp;amp;auto_play=false&amp;amp;hide_related=false&amp;amp;show_comments=true&amp;amp;show_user=true&amp;amp;show_reposts=false&amp;amp;visual=true&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Mon, 04 Sep 2017 23:00:00 +1000</pubDate>
+        <link>http://peacefixation.github.io/music/2017/09/04/follow-me.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/music/2017/09/04/follow-me.html</guid>
+        
+        
+        <category>music</category>
+        
+      </item>
+    
+      <item>
+        <title>Add an offset to a list of numbers with Vim</title>
+        <description>&lt;p&gt;I had a task today to pull out a bunch of account ids from a log file so we could email the customers. I needed to add an offset to these account ids to turn them into an account number. This is easy enough, but there were a lot of them, and it’s tedious to do by hand. Vim to the rescue!&lt;/p&gt;
+
+&lt;p&gt;Given a file containing a list of numbers on consecutive lines, I want to add an offset of 10 to every number.&lt;/p&gt;
+
+&lt;p&gt;1 &lt;br /&gt;
+2 &lt;br /&gt;
+3 &lt;br /&gt;
+4 &lt;br /&gt;
+5 &lt;br /&gt;
+6 &lt;br /&gt;
+7 &lt;br /&gt;
+8 &lt;br /&gt;
+9 &lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;First a quick Vim refresher. Vim has modes. Normal mode is for navigation and text manipulation, everything you type is interpreted as a command. You can use commands like &lt;code class=&quot;highlighter-rouge&quot;&gt;gg&lt;/code&gt; to go the start of the file, &lt;code class=&quot;highlighter-rouge&quot;&gt;G&lt;/code&gt; to go to the end of the file, &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; to go to the end of the line, etc. You can return to normal mode from another mode by pressing &lt;code class=&quot;highlighter-rouge&quot;&gt;ESC&lt;/code&gt;. Command-line mode is for Vim commands. You enter command-line mode by pressing &lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;, then you enter your command. For example &lt;code class=&quot;highlighter-rouge&quot;&gt;:set nu&lt;/code&gt; turns line numbering on. &lt;code class=&quot;highlighter-rouge&quot;&gt;:help  command-line-mode&lt;/code&gt; opens the help file for command-line-mode. With that out of the way, we are going to record a macro and then execute it by running a cormal mode command from command-line mode with the &lt;code class=&quot;highlighter-rouge&quot;&gt;normal&lt;/code&gt; command. Vim is complicated. :)&lt;/p&gt;
+
+&lt;p&gt;Create a file with the numbers 1-9 on consequtive lines. Press &lt;code class=&quot;highlighter-rouge&quot;&gt;ESC&lt;/code&gt; to make sure we’re in normal mode. Now we will record a macro called &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;qa&lt;/code&gt; to start recording&lt;/li&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;10&lt;/code&gt; and press &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl-A&lt;/code&gt; to increment the first number by 10&lt;/li&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt; to stop recording&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;:u&lt;/code&gt; to undo the last command to revert that change, alternatively type &lt;code class=&quot;highlighter-rouge&quot;&gt;10&lt;/code&gt; and press &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl-X&lt;/code&gt; to decrement the number by 10.&lt;/p&gt;
+
+&lt;p&gt;Now we will apply the macro to every line in the file, from normal mode:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;:%normal! @a&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let’s dissect that command.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt; enters command mode. &lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt; means select the entire range from the start of the buffer to the end. &lt;code class=&quot;highlighter-rouge&quot;&gt;normal&lt;/code&gt; means execute a normal mode command, but that’s not enough. &lt;code class=&quot;highlighter-rouge&quot;&gt;normal!&lt;/code&gt; means execute a normal mode command and ignore any remappings. If the user has remapped the &lt;code class=&quot;highlighter-rouge&quot;&gt;@&lt;/code&gt; command to something else we will ignore that mapping. &lt;code class=&quot;highlighter-rouge&quot;&gt;@a&lt;/code&gt; executes the macro named &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;And there it is, an offset added to every number!&lt;/p&gt;
+
+&lt;p&gt;11 &lt;br /&gt;
+12 &lt;br /&gt;
+13 &lt;br /&gt;
+14 &lt;br /&gt;
+15 &lt;br /&gt;
+16 &lt;br /&gt;
+17 &lt;br /&gt;
+18 &lt;br /&gt;
+19 &lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;I had some help from a Stack Overflow &lt;a href=&quot;https://stackoverflow.com/questions/390174/in-vim-how-do-i-apply-a-macro-to-a-set-of-lines&quot;&gt;answer&lt;/a&gt;, and  I also found a nice &lt;a href=&quot;http://learnvimscriptthehardway.stevelosh.com/&quot;&gt;Vim tutorial&lt;/a&gt; where I learned about the &lt;code class=&quot;highlighter-rouge&quot;&gt;normal!&lt;/code&gt; command.&lt;/p&gt;
+
+&lt;p&gt;Next I had to pull the email addresses out of the database. I included my account numbers in an SQL query with a little help from Vim’s substitute command.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:%s/$/,/g&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;What’s this doing? Well &lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt; enters command mode and &lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt; selects the whole buffer. Then &lt;code class=&quot;highlighter-rouge&quot;&gt;s&lt;/code&gt; is the substitute command and we find the end of each line with &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; (which is a zero length match) and replace (well, replacing nothing with something is more like insert) it with a &lt;code class=&quot;highlighter-rouge&quot;&gt;,&lt;/code&gt; and we specify the &lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt; (global) flag so we keep replacing after the first match. So now we have a comma after each number, and it’s easy to go from this:&lt;/p&gt;
+
+&lt;p&gt;11, &lt;br /&gt;
+12, &lt;br /&gt;
+13, &lt;br /&gt;
+14, &lt;br /&gt;
+15, &lt;br /&gt;
+16, &lt;br /&gt;
+17, &lt;br /&gt;
+18, &lt;br /&gt;
+19, &lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;to this (which I did manually):&lt;/p&gt;
+
+&lt;p&gt;SELECT email_address &lt;br /&gt;
+FROM the_table &lt;br /&gt;
+WHERE account_number IN ( &lt;br /&gt;
+11, &lt;br /&gt;
+12, &lt;br /&gt;
+13, &lt;br /&gt;
+14, &lt;br /&gt;
+15, &lt;br /&gt;
+16, &lt;br /&gt;
+17, &lt;br /&gt;
+18, &lt;br /&gt;
+19) &lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;The names of database tables and columns have been changed to protect the innocent, but there you go, that’s a tedious, everyday task made quick and easy with the help of an advanced text editor. I’m a big noob with Vim, but here and there I learn a new trick and slowly but surely I get better at it. I hope this helps someone advance a little!&lt;/p&gt;
+</description>
+        <pubDate>Wed, 30 Aug 2017 21:00:00 +1000</pubDate>
+        <link>http://peacefixation.github.io/development/2017/08/30/vim-add-offset-macro.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/development/2017/08/30/vim-add-offset-macro.html</guid>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>Asterisk syntax highlighting extension for Visual Studio Code</title>
+        <description>&lt;p&gt;I’ve started using Microsoft’s new &lt;a href=&quot;https://code.visualstudio.com/&quot;&gt;Visual Studio Code&lt;/a&gt; text editor at work and it’s pretty neat. I like it more than the Brackets editor that I was using before. It’s similar, but more polished and has some excellent features like an integrated terminal and a debugger. As you might expect there is a comprehensive extension repository but once again there was no syntax highlighter for Asterisk dialplan code so I took it upon myself to fill the void and wrote one. This time around there was no existing language grammar for me to use, so it was a slightly more formidable undertaking.&lt;/p&gt;
+
+&lt;p&gt;If you’d like to make your own extension I’d recommend following the &lt;a href=&quot;https://code.visualstudio.com/docs/extensions/overview&quot;&gt;extensive documentation&lt;/a&gt; to get started, it’s all explained very well and I won’t repeat it here. You can &lt;code class=&quot;highlighter-rouge&quot;&gt;npm install&lt;/code&gt; Yeoman and the VS Code Extension Generator to create the boiler plate including a howto reference which is nice to have on hand.&lt;/p&gt;
+
+&lt;p&gt;The extension framework is fairly simple, define the extension properties in &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; and create a &lt;code class=&quot;highlighter-rouge&quot;&gt;syntaxes/asterisk.tmLanguage&lt;/code&gt; file for the TextMate grammar. A few extra features are defined in the &lt;code class=&quot;highlighter-rouge&quot;&gt;language-configuration.json&lt;/code&gt; file, such as the comment character, character pairs that will be auto-closed and characters that can be used to surround a selection, like quote marks or braces.&lt;/p&gt;
+
+&lt;p&gt;Syntax highlighting extensions use the TextMate framework for language grammars, similar to Atom and Sublime and .. well, TextMate. A grammar is defined by defining a regex that will match a syntax element and then setting a scope. The scope might be &lt;code class=&quot;highlighter-rouge&quot;&gt;comment.quoted&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;meta.function&lt;/code&gt; and depending on your current colour theme, each scope will take on a certain colour and style in your editor.&lt;/p&gt;
+
+&lt;p&gt;Fully fledged language extensions (i.e. intellisense, auto-correct) are much more complex, I didn’t need such features for this extension.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-grammar&quot;&gt;The Grammar&lt;/h1&gt;
+
+&lt;p&gt;Creating the regexes for the Asterisk dialplan grammar was equal parts easy and hard. I don’t know of an official definition for the grammar so I just worked with the syntax that I know, and the little documentation there is. This is further compounded by the fact that I work with an older version of Asterisk (1.6), so there is some newer syntax I’m not familiar with. In any case, I did what I could, and I will improve the extension as I can.&lt;/p&gt;
+
+&lt;p&gt;Matching keywords, or a variable definition, or a function call was pretty easy. It was harder to match a variable inside a quoted string inside a function call, but it was all possible, and after some trial and error I have it working quite nicely.&lt;/p&gt;
+
+&lt;p&gt;Here’s an example of a simple match for a file import declaration like &lt;code class=&quot;highlighter-rouge&quot;&gt;#include extensions.conf&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;dict&amp;gt;
+    &amp;lt;key&amp;gt;match&amp;lt;/key&amp;gt;
+    &amp;lt;string&amp;gt;^#include&amp;lt;/string&amp;gt;
+    &amp;lt;key&amp;gt;name&amp;lt;/key&amp;gt;
+    &amp;lt;string&amp;gt;keyword.control.import&amp;lt;/string&amp;gt;
+&amp;lt;/dict&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here’s an example of a much more complicated match on a variable that can contain a nested variable &lt;code class=&quot;highlighter-rouge&quot;&gt;${CHANNEL_${MAX_CHANNELS}}&lt;/code&gt;, or a nested function &lt;code class=&quot;highlighter-rouge&quot;&gt;${CDR(accountcode)}&lt;/code&gt;. They key to effectively writing this match was capturing the open and closing parts, then capturing the nested function and including a match on &lt;code class=&quot;highlighter-rouge&quot;&gt;$self&lt;/code&gt; for nested variables before finally matching on the rest of the inner text with a match on anything that isn’t the closing part.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;key&amp;gt;VariableNested&amp;lt;/key&amp;gt;
+&amp;lt;dict&amp;gt;
+    &amp;lt;key&amp;gt;begin&amp;lt;/key&amp;gt;
+    &amp;lt;string&amp;gt;(\$\{)&amp;lt;/string&amp;gt;
+    &amp;lt;key&amp;gt;beginCaptures&amp;lt;/key&amp;gt;
+    &amp;lt;dict&amp;gt;
+        &amp;lt;key&amp;gt;1&amp;lt;/key&amp;gt;
+        &amp;lt;dict&amp;gt;
+            &amp;lt;key&amp;gt;name&amp;lt;/key&amp;gt;
+            &amp;lt;string&amp;gt;variable&amp;lt;/string&amp;gt;
+        &amp;lt;/dict&amp;gt;
+    &amp;lt;/dict&amp;gt;
+    &amp;lt;key&amp;gt;end&amp;lt;/key&amp;gt;
+    &amp;lt;string&amp;gt;(\})&amp;lt;/string&amp;gt;
+    &amp;lt;key&amp;gt;endCaptures&amp;lt;/key&amp;gt;
+    &amp;lt;dict&amp;gt;
+        &amp;lt;key&amp;gt;1&amp;lt;/key&amp;gt;
+        &amp;lt;dict&amp;gt;
+            &amp;lt;key&amp;gt;name&amp;lt;/key&amp;gt;
+            &amp;lt;string&amp;gt;variable&amp;lt;/string&amp;gt;
+        &amp;lt;/dict&amp;gt;
+    &amp;lt;/dict&amp;gt;
+    &amp;lt;key&amp;gt;patterns&amp;lt;/key&amp;gt;
+    &amp;lt;array&amp;gt;
+        &amp;lt;dict&amp;gt;
+            &amp;lt;key&amp;gt;include&amp;lt;/key&amp;gt;
+            &amp;lt;string&amp;gt;#FunctionNested&amp;lt;/string&amp;gt;
+        &amp;lt;/dict&amp;gt;
+        &amp;lt;dict&amp;gt;
+            &amp;lt;key&amp;gt;include&amp;lt;/key&amp;gt;
+            &amp;lt;string&amp;gt;$self&amp;lt;/string&amp;gt;
+        &amp;lt;/dict&amp;gt;
+        &amp;lt;dict&amp;gt;
+            &amp;lt;key&amp;gt;match&amp;lt;/key&amp;gt;
+            &amp;lt;string&amp;gt;[^}]&amp;lt;/string&amp;gt;
+            &amp;lt;key&amp;gt;name&amp;lt;/key&amp;gt;
+            &amp;lt;string&amp;gt;variable&amp;lt;/string&amp;gt;
+        &amp;lt;/dict&amp;gt;
+    &amp;lt;/array&amp;gt;
+&amp;lt;/dict&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A cool feature of the grammar file is the repository. You can create a repository of named matches using the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;repository&amp;gt;&lt;/code&gt; tag. Once defined, you can include a named match in the main part of the file as required. This could be a top level match, or a sub level match. In my grammar, I define a variable, and then I include it as a stand alone variable, as a nested variable inside a quoted string, as a nested variable inside a function and also as a nested variable inside an expression. Don’t repeat yourself! :)&lt;/p&gt;
+
+&lt;p&gt;I found the &lt;a href=&quot;http://manual.macromates.com/en/&quot;&gt;TextMate manual&lt;/a&gt; and the &lt;a href=&quot;https://www.sublimetext.com/docs/3/scope_naming.html&quot;&gt;Sublime scope naming page&lt;/a&gt; very helpful. I also dug out the colour theme definitions inside the VS Code folder to see which scopes the included themes target for highlighting. I ended up choosing some scopes that were semantically incorrect, but resulted in a better highlight across multiple themes. I don’t feel particularly good about that, but at the end of the day, better highlighting means faster Asterisk dialplan development, so I compromised on correctness.&lt;/p&gt;
+
+&lt;p&gt;Publishing the extension was simple, but you do need to create a Visual Studio Team System (VSTS) account in order to generate a &lt;code class=&quot;highlighter-rouge&quot;&gt;Personal Access Token&lt;/code&gt;. The &lt;a href=&quot;https://code.visualstudio.com/docs/extensions/publish-extension&quot;&gt;documentation&lt;/a&gt; walks you through the process. Once you have your token, publish the extension by running &lt;code class=&quot;highlighter-rouge&quot;&gt;vsce publish -p &amp;lt;token&amp;gt;&lt;/code&gt; and you’re done!&lt;/p&gt;
+
+&lt;p&gt;You can see the full extension code on &lt;a href=&quot;https://github.com/peacefixation/asterisk-vscode&quot;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 27 Aug 2017 18:00:00 +1000</pubDate>
+        <link>http://peacefixation.github.io/development/2017/08/27/asterisk-vscode.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/development/2017/08/27/asterisk-vscode.html</guid>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>Learn you more Haskell</title>
+        <description>&lt;p&gt;It’s time for some more Haskell. I’m going to work through chapter 2 of &lt;a href=&quot;https://www.amazon.com/Exercises-Programmers-Challenges-Develop-Coding/dp/1680501224&quot;&gt;Exercises for Programmers: 57 Challenges to Develop Your Coding Skills&lt;/a&gt; and see what happens.&lt;/p&gt;
+
+&lt;h1 id=&quot;saying-hello&quot;&gt;Saying Hello&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Create a program that prompts for your name and prints a greeting using your name.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;Constraints:&lt;/strong&gt; Keep the input, string concatenation, and output separate.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;What is your name? &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    
+    &lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;greeting&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;, nice to meet you!&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;greeting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Well, that was simpler than my first program and there’s nothing new to mention so I’ll move straight on to the first challenge.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Write a new version of the program without using any variables&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;, nice to meet you!&quot;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is your name? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I thought about this for a while and I would like to solve it by writing functions and combining them. I can write a function &lt;code class=&quot;highlighter-rouge&quot;&gt;greet&lt;/code&gt; to concatenate the name and greeting but I’m not sure how to write the function that prints the question and returns the name that the user enters as a &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; instead of an &lt;code class=&quot;highlighter-rouge&quot;&gt;IO String&lt;/code&gt;, so I’m still using one variable that binds to the value that &lt;code class=&quot;highlighter-rouge&quot;&gt;GetLine&lt;/code&gt; produces. I’ll come back to this once I learn some more about monads.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Write a version of the program that displays different greetings for different people.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Bob&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, Bob, great to see you!&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Alice&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, Alice, it&#39;s been too long!&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;, nice to meet you!&quot;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is your name? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I extended the &lt;code class=&quot;highlighter-rouge&quot;&gt;greet&lt;/code&gt; function to greet Bob and Alice differently by using pattern matching on the input parameter.&lt;/p&gt;
+
+&lt;p&gt;Let’s move onto to the next part of the chapter.&lt;/p&gt;
+
+&lt;h1 id=&quot;counting-the-number-of-characters&quot;&gt;Counting the Number of Characters&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Create a program that prompts for an input string and displays output that shows the input string and the numer of characters the string contains.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;Constraints:&lt;/strong&gt; Be sure the output contains the original string. Use a single output statement to construct the output. Use a built-in function of the programming language to determine the length of the string.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is the input string? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; has &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;show&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; characters&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I use the built in &lt;code class=&quot;highlighter-rouge&quot;&gt;length&lt;/code&gt; function to calculate the length of the input and because it’s an &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer&lt;/code&gt; I use &lt;code class=&quot;highlighter-rouge&quot;&gt;show&lt;/code&gt; to get its &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; representation.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If the user enters nothing, state that the user must enter something into the program&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;prompt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;IO&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;prompt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is the input string? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+
+    &lt;span class=&quot;kr&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+        &lt;span class=&quot;kr&quot;&gt;then&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; has &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;show&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; characters&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prompt&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;prompt&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here I made a function called &lt;code class=&quot;highlighter-rouge&quot;&gt;prompt&lt;/code&gt; that asks the user to input a string. If the length of the string is greater than 0 then I print the output, otherwise I recursively call &lt;code class=&quot;highlighter-rouge&quot;&gt;prompt&lt;/code&gt; again to ask the user for input. I also saw how to use &lt;code class=&quot;highlighter-rouge&quot;&gt;hFlush stdout&lt;/code&gt; when I need to flush the output which is much nicer than the &lt;code class=&quot;highlighter-rouge&quot;&gt;hSetBuffering stdout NoBuffering&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;hSetBuffering stdin NoBuffering&lt;/code&gt; I was doing before.&lt;/p&gt;
+
+&lt;p&gt;There is a third challenge to implement the program with a GUI, but I’m going to leave that for now until I learn some more Haskell!&lt;/p&gt;
+
+&lt;h1 id=&quot;printing-quotes&quot;&gt;Printing Quotes&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Create a program that promts for a quote and an author. Display the quotation and author in the specified format.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;Constraints:&lt;/strong&gt; Use a single output statement to produce this output. Use string concatenation (not templates).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is the quote? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;quote&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Who said it? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; says, &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;quote&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is very similar to the other programs. I had to escape the double quotes with a &lt;code class=&quot;highlighter-rouge&quot;&gt;\&lt;/code&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Modify this program so that instead of prompting for quotes from the user, you create a structure that holds quotes  and their associated attributions and then display all of the quotes using the specified format.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;quotes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;quotes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Obi Wan Kenobi&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;These aren&#39;t the droids you&#39;re looking for.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Neil Armstrong&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Houston, Tranquility Base here. The Eagle has landed.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Arnold Schwarzenegger&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;I&#39;ll be back!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;printQuote&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;IO&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;printQuote&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;quote&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; says, &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;quote&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mapM_&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printQuote&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;quotes&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This was an interesting modification. First I stored the quotes as a list of tuples with two &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; elements. Then I found the &lt;code class=&quot;highlighter-rouge&quot;&gt;mapM_&lt;/code&gt; function that takes a data structure and a monadic action and applies the action to each element. I wrote a little function called &lt;code class=&quot;highlighter-rouge&quot;&gt;printQuote&lt;/code&gt; to take an (author, quote) tuple and print it with some formatting. Then in &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; I call &lt;code class=&quot;highlighter-rouge&quot;&gt;mapM_&lt;/code&gt; with two arguments, my printing function and the list of quotes, and behold, the quotes are printed.&lt;/p&gt;
+
+&lt;p&gt;I feel like I’ve gone a little too far without learning some more fundamentals at this stage, but the chapter is almost over, only one more program to write.&lt;/p&gt;
+
+&lt;h1 id=&quot;mad-lib&quot;&gt;Mad Lib&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Create a simple mad-lib program that prompts for a noun, a verb, an adverb, and an adjective and injects those into a story that you create.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;Constraints:&lt;/strong&gt; Use a single output statement for this program. If your language supports string interpolation or string substitution, use it to build up the output&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Text.Printf&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Enter a noun: &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;noun&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Enter a verb: &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;verb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Enter an adjective: &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;adjective&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Enter an adverb: &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hFlush&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;adverb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    
+    &lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;If you %s your %s %s %s I will eat my hat!&quot;&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;verb&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adjective&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;noun&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adverb&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I found a &lt;code class=&quot;highlighter-rouge&quot;&gt;printf&lt;/code&gt; function to do the string interpolation.&lt;/p&gt;
+
+&lt;p&gt;There’s a challenge to add more inputs to the program to expand the story but I’m going to stop here and move on to the next chapter to work on some numeric problems and learn some more tricks before I try to write a larger program.&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 26 May 2016 11:51:12 +1000</pubDate>
+        <link>http://peacefixation.github.io/haskell/2016/05/26/learn-you-more-haskell.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/haskell/2016/05/26/learn-you-more-haskell.html</guid>
+        
+        
+        <category>haskell</category>
+        
+      </item>
+    
+      <item>
+        <title>Learn you a Haskell</title>
+        <description>&lt;p&gt;I’ve been reading about functional programming lately, and I want to learn a new language to try it out properly. I picked Haskell for a few reasons. First, it’s touted as a &lt;a href=&quot;https://en.wikipedia.org/wiki/Purely_functional&quot;&gt;pure&lt;/a&gt; functional language, and that appeals to me because I want to learn functional programming in particular, and not have the concepts blurred by a hybrid language. Second, there’s a lot of good online resources that I can learn from. Third, it has a cool name.&lt;/p&gt;
+
+&lt;p&gt;There’s a couple of online tutorials I’ve found that seem to be well regarded. I’m working through them in parallel. &lt;a href=&quot;http://learnyouahaskell.com/&quot;&gt;Learn You A Haskell&lt;/a&gt; is a little more wordy (and funny!), &lt;a href=&quot;http://book.realworldhaskell.org/&quot;&gt;Real World Haskell&lt;/a&gt; has more practical examples. Between the two of them I’m beginning to understand things. I also bought a new book called &lt;a href=&quot;https://www.amazon.com/Exercises-Programmers-Challenges-Develop-Coding/dp/1680501224&quot;&gt;Exercises for Programmers: 57 Challenges to Develop Your Coding Skills&lt;/a&gt; to help me with some ideas for small programs to write and test my knowlege.&lt;/p&gt;
+
+&lt;p&gt;So without further ado, here is the first question in the book, and my first program in Haskell.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Create a simple tip calculator. The program should prompt for a bill amount and a tip rate. The program must compute the tip and display both the tip and the total amount of the bill.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-hs&quot; data-lang=&quot;hs&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;System.IO&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hSetBuffering&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NoBuffering&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is the bill amount? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;billAmountInput&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStr&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;What is the tip rate? &quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tipRateInput&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLine&lt;/span&gt;
+
+    &lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;billAmount&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;billAmountInput&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tipRate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tipRateInput&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;
+
+    &lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;billAmount&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tipRate&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;billAmount&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;The tip is $&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;show&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;putStrLn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;The total is $&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;show&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To run this program in the &lt;code class=&quot;highlighter-rouge&quot;&gt;ghci&lt;/code&gt; interpreter:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;save the code to a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;tip.hs&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;open &lt;code class=&quot;highlighter-rouge&quot;&gt;ghci&lt;/code&gt; at the location of the file&lt;/li&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;:l tip.hs&lt;/code&gt; at the prompt to load the file&lt;/li&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; to run the program&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Alternatively you can compile it:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;save the code to a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;tip.hs&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;ghc --make tip.hs&lt;/code&gt; to compile the program&lt;/li&gt;
+  &lt;li&gt;type &lt;code class=&quot;highlighter-rouge&quot;&gt;tip.exe&lt;/code&gt; (or &lt;code class=&quot;highlighter-rouge&quot;&gt;./tip&lt;/code&gt; depending on your environment) to run the program&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This exercise stretched me further than I had read in either of the tutorials, so I had to scrap around a bit and learn how to do basic IO (monads). So how does it work? Well …&lt;/p&gt;
+
+&lt;p&gt;I import the &lt;code class=&quot;highlighter-rouge&quot;&gt;System.IO&lt;/code&gt; library. I didn’t realise this at first, but the input and output were buffered by default and all of the calls to &lt;code class=&quot;highlighter-rouge&quot;&gt;PutStr&lt;/code&gt; were being printed at once which was undesirable, so I’m going to disable buffering for &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; and for that I need &lt;code class=&quot;highlighter-rouge&quot;&gt;System.IO&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I define a function called &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; that executes a sequence of actions in a &lt;code class=&quot;highlighter-rouge&quot;&gt;do&lt;/code&gt; block. I disable buffering for &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; as previously mentioned. The program prompts for the bill amount and the tip rate and stores the input. I use &lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt; to convert the input from a &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; to a &lt;code class=&quot;highlighter-rouge&quot;&gt;Float&lt;/code&gt;. Then I calculate the tip and the total and write them out to the console using &lt;code class=&quot;highlighter-rouge&quot;&gt;++&lt;/code&gt; to concatenate and &lt;code class=&quot;highlighter-rouge&quot;&gt;show&lt;/code&gt; to convert the &lt;code class=&quot;highlighter-rouge&quot;&gt;Float&lt;/code&gt; value to a &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s a bit rough, I admit it. There are no constraints or error checking on the input, &lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt; will throw an exception if the input &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; can’t be parsed to a &lt;code class=&quot;highlighter-rouge&quot;&gt;Float&lt;/code&gt;. Strange things might happen if the &lt;code class=&quot;highlighter-rouge&quot;&gt;Float&lt;/code&gt; calculation overflows. I don’t print the values out with 2 decimal places, and there’s nothing particularly functional about any of it, but that right there is my first Haskell program, I learned a bunch of new things and I’m a little chuffed!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 10 May 2016 14:26:12 +1000</pubDate>
+        <link>http://peacefixation.github.io/haskell/2016/05/10/learn-you-a-haskell.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/haskell/2016/05/10/learn-you-a-haskell.html</guid>
+        
+        
+        <category>haskell</category>
+        
+      </item>
+    
+      <item>
+        <title>Asterisk syntax highlighting extension for Brackets</title>
+        <description>&lt;p&gt;I recently started using the &lt;a href=&quot;http://brackets.io/&quot;&gt;Brackets&lt;/a&gt; text editor. Brackets is a powerful open source text editor in much the same vein as Sublime with lots of nice programming features and support for extensions. Some of the files that I edit are Asterisk configuration files. Asterisk is a VoIP server and these are the files that tell it how to route VoIP calls. They have their own special syntax and Brackets didn’t include a syntax highlighter by default, so I thought I might make one.&lt;/p&gt;
+
+&lt;p&gt;As it turns out it’s not so hard and there’s a &lt;a href=&quot;https://github.com/adobe/brackets/wiki/How-to-Write-Extensions&quot;&gt;How To Write Extensions&lt;/a&gt; guide on the Brackets Github repo. Of particular interest is the &lt;a href=&quot;https://github.com/adobe/brackets/wiki/Language-Support&quot;&gt;Language Support&lt;/a&gt; section. Here I discovered that Brackets actually leverages the Code Mirror syntax highlighters, and since there’s already an Asterisk language mode there, I could just reference that and be on my way. Well, almost. So here’s how I made the extension.&lt;/p&gt;
+
+&lt;p&gt;Open the Brackets extension folder, &lt;code class=&quot;highlighter-rouge&quot;&gt;Help &amp;gt; Show Extensions Folder&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Open the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; folder and create a new folder for your extension.&lt;/p&gt;
+
+&lt;p&gt;Create a &lt;code class=&quot;highlighter-rouge&quot;&gt;main.js&lt;/code&gt; file inside your extension folder.&lt;/p&gt;
+
+&lt;p&gt;To add language support for a language with an existing &lt;a href=&quot;http://codemirror.net/mode/&quot;&gt;Code Mirror mode&lt;/a&gt;, add the following to your main.js where the value for &lt;code class=&quot;highlighter-rouge&quot;&gt;mode&lt;/code&gt; matches the Code Mirror mode. This part took me the longest because it wasn’t actually clear what the Code Mirror mode for Asterisk was called, given that in the list it’s referred to as “Asterisk dialplan”. After some trial and error I discovered that the name is the directory name in the URL &lt;code class=&quot;highlighter-rouge&quot;&gt;http://codemirror.net/mode/asterisk/index.html&lt;/code&gt;, i.e. “asterisk”.&lt;/p&gt;
+
+&lt;p&gt;If your language does not have an existing Code Mirror mode, you’ll need to write it yourself. That’s beyond the scope of this article, so I’ll leave it as an exercise for you.&lt;/p&gt;
+
+&lt;p&gt;This code is based on the example in the &lt;a href=&quot;https://github.com/adobe/brackets/wiki/Language-Support&quot;&gt;Language Support&lt;/a&gt; section. Note that I’m defining a name that will appear in the list of languages, the Code Mirror language mode, a file extension to associate this language with (I ended up removing it because &lt;code class=&quot;highlighter-rouge&quot;&gt;.conf&lt;/code&gt; files are far too common to associate with Asterisk), and a single line comment character.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;nx&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;LanguageManager&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;brackets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getModule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;language/LanguageManager&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;LanguageManager&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defineLanguage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;asterisk&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Asterisk&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;asterisk&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//fileExtensions: [&quot;conf&quot;],&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;lineComment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;While you’re hacking away you can reload changes to the extension from the Brackets menu &lt;code class=&quot;highlighter-rouge&quot;&gt;Debug &amp;gt; Reload With Extensions&lt;/code&gt;. There’s a lot more information on debugging in the Brackets extension guide, so I won’t replicate that here.&lt;/p&gt;
+
+&lt;p&gt;When you’re ready to publish your opus, you need to create a &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; file. Refer to the Brackets extension guide for an &lt;a href=&quot;https://github.com/adobe/brackets/wiki/Extension-package-format#packagejson-format&quot;&gt;example&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then package your extension files in a &lt;code class=&quot;highlighter-rouge&quot;&gt;.zip&lt;/code&gt; archive and upload it to the &lt;a href=&quot;https://brackets-registry.aboutweb.com/&quot;&gt;Brackets Extension Registry&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Your extension will now be available from the Brackets menu &lt;code class=&quot;highlighter-rouge&quot;&gt;File &amp;gt; Extension Manager&lt;/code&gt;, and viola, you’re done!&lt;/p&gt;
+
+&lt;p&gt;You can see the code for this little extension on &lt;a href=&quot;https://github.com/peacefixation/AsteriskSyntaxHighlighting&quot;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 31 Mar 2016 12:46:37 +1100</pubDate>
+        <link>http://peacefixation.github.io/development/2016/03/31/asterisk-brackets.html</link>
+        <guid isPermaLink="true">http://peacefixation.github.io/development/2016/03/31/asterisk-brackets.html</guid>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+  </channel>
+</rss>

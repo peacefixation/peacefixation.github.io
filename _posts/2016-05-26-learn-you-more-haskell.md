@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "The second Haskell session"
+title:  "Learn you more Haskell"
 date:   2016-05-26 12:51:12 +1100
 categories: haskell
 ---

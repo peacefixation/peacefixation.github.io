@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Learn you more Haskell</title>
+    <meta name="description" content="It’s time for some more Haskell. I’m going to work through chapter 2 of Exercises for Programmers: 57 Challenges to Develop Your Coding Skills and see what h...">
+
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+    
+    
+    
+    
+    
+    <link rel="canonical" href="http://peacefixation.github.io/haskell/2016/05/26/learn-you-more-haskell.html">
+    <link rel="alternate" type="application/rss+xml" title="Matt Jarvis" href="http://peacefixation.github.io/feed.xml">
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Matt Jarvis</a>
+
+        <nav class="site-nav">
+            <a href="#" class="menu-icon">
+                <svg viewBox="0 0 18 15">
+                <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </a>
+
+            <div class="trigger">
+                
+                    
+                        <a class="page-link" href="/categories/">Categories</a>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                        <a class="page-link" href="/links/">Links</a>
+                    
+                
+                    
+                
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+
+
+        <div class="page-content">
+            <div class="wrapper">
+
+                <div id="content">
+                    
+                    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Learn you more Haskell</h1>
+        <p class="post-meta"><time datetime="2016-05-26T11:51:12+10:00" itemprop="datePublished">May 26, 2016</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+        <p>It’s time for some more Haskell. I’m going to work through chapter 2 of <a href="https://www.amazon.com/Exercises-Programmers-Challenges-Develop-Coding/dp/1680501224">Exercises for Programmers: 57 Challenges to Develop Your Coding Skills</a> and see what happens.</p>
+
+<h1 id="saying-hello">Saying Hello</h1>
+
+<blockquote>
+  <p>Create a program that prompts for your name and prints a greeting using your name.</p>
+
+  <p><strong>Constraints:</strong> Keep the input, string concatenation, and output separate.</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdout</span> <span class="kt">NoBuffering</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdin</span> <span class="kt">NoBuffering</span>
+
+    <span class="n">putStr</span> <span class="p">(</span><span class="s">"What is your name? "</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    
+    <span class="kr">let</span> <span class="n">greeting</span> <span class="o">=</span> <span class="s">"Hello, "</span> <span class="o">++</span> <span class="n">name</span> <span class="o">++</span> <span class="s">", nice to meet you!"</span>
+
+    <span class="n">putStrLn</span> <span class="p">(</span><span class="n">greeting</span><span class="p">)</span></code></pre></figure>
+
+<p>Well, that was simpler than my first program and there’s nothing new to mention so I’ll move straight on to the first challenge.</p>
+
+<blockquote>
+  <p>Write a new version of the program without using any variables</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">greet</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">greet</span> <span class="n">name</span> <span class="o">=</span> <span class="s">"Hello, "</span> <span class="o">++</span> <span class="n">name</span> <span class="o">++</span> <span class="s">", nice to meet you!"</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdout</span> <span class="kt">NoBuffering</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdin</span> <span class="kt">NoBuffering</span>
+
+    <span class="n">putStr</span> <span class="s">"What is your name? "</span>
+    <span class="n">name</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStrLn</span> <span class="p">(</span><span class="n">greet</span> <span class="n">name</span><span class="p">)</span></code></pre></figure>
+
+<p>I thought about this for a while and I would like to solve it by writing functions and combining them. I can write a function <code class="highlighter-rouge">greet</code> to concatenate the name and greeting but I’m not sure how to write the function that prints the question and returns the name that the user enters as a <code class="highlighter-rouge">String</code> instead of an <code class="highlighter-rouge">IO String</code>, so I’m still using one variable that binds to the value that <code class="highlighter-rouge">GetLine</code> produces. I’ll come back to this once I learn some more about monads.</p>
+
+<blockquote>
+  <p>Write a version of the program that displays different greetings for different people.</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">greet</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">greet</span> <span class="s">"Bob"</span> <span class="o">=</span> <span class="s">"Hello, Bob, great to see you!"</span>
+<span class="n">greet</span> <span class="s">"Alice"</span> <span class="o">=</span> <span class="s">"Hello, Alice, it's been too long!"</span>
+<span class="n">greet</span> <span class="n">name</span> <span class="o">=</span> <span class="s">"Hello, "</span> <span class="o">++</span> <span class="n">name</span> <span class="o">++</span> <span class="s">", nice to meet you!"</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdout</span> <span class="kt">NoBuffering</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdin</span> <span class="kt">NoBuffering</span>
+
+    <span class="n">putStr</span> <span class="s">"What is your name? "</span>
+    <span class="n">name</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStrLn</span> <span class="p">(</span><span class="n">greet</span> <span class="n">name</span><span class="p">)</span></code></pre></figure>
+
+<p>I extended the <code class="highlighter-rouge">greet</code> function to greet Bob and Alice differently by using pattern matching on the input parameter.</p>
+
+<p>Let’s move onto to the next part of the chapter.</p>
+
+<h1 id="counting-the-number-of-characters">Counting the Number of Characters</h1>
+
+<blockquote>
+  <p>Create a program that prompts for an input string and displays output that shows the input string and the numer of characters the string contains.</p>
+
+  <p><strong>Constraints:</strong> Be sure the output contains the original string. Use a single output statement to construct the output. Use a built-in function of the programming language to determine the length of the string.</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdout</span> <span class="kt">NoBuffering</span>
+    <span class="n">hSetBuffering</span> <span class="n">stdin</span> <span class="kt">NoBuffering</span>
+
+    <span class="n">putStr</span> <span class="s">"What is the input string? "</span>
+    <span class="n">input</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStrLn</span> <span class="p">(</span><span class="n">input</span> <span class="o">++</span> <span class="s">" has "</span> <span class="o">++</span> <span class="n">show</span> <span class="p">(</span><span class="n">length</span> <span class="n">input</span><span class="p">)</span> <span class="o">++</span> <span class="s">" characters"</span><span class="p">)</span></code></pre></figure>
+
+<p>I use the built in <code class="highlighter-rouge">length</code> function to calculate the length of the input and because it’s an <code class="highlighter-rouge">Integer</code> I use <code class="highlighter-rouge">show</code> to get its <code class="highlighter-rouge">String</code> representation.</p>
+
+<blockquote>
+  <p>If the user enters nothing, state that the user must enter something into the program</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">prompt</span> <span class="o">::</span> <span class="kt">IO</span> <span class="nb">()</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">putStr</span> <span class="s">"What is the input string? "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">str</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+
+    <span class="kr">if</span> <span class="n">length</span> <span class="n">str</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="kr">then</span> <span class="n">putStrLn</span> <span class="p">(</span><span class="n">str</span> <span class="o">++</span> <span class="s">" has "</span> <span class="o">++</span> <span class="n">show</span> <span class="p">(</span><span class="n">length</span> <span class="n">str</span><span class="p">)</span> <span class="o">++</span> <span class="s">" characters"</span><span class="p">)</span>
+    <span class="kr">else</span> <span class="n">prompt</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">prompt</span></code></pre></figure>
+
+<p>Here I made a function called <code class="highlighter-rouge">prompt</code> that asks the user to input a string. If the length of the string is greater than 0 then I print the output, otherwise I recursively call <code class="highlighter-rouge">prompt</code> again to ask the user for input. I also saw how to use <code class="highlighter-rouge">hFlush stdout</code> when I need to flush the output which is much nicer than the <code class="highlighter-rouge">hSetBuffering stdout NoBuffering</code> and <code class="highlighter-rouge">hSetBuffering stdin NoBuffering</code> I was doing before.</p>
+
+<p>There is a third challenge to implement the program with a GUI, but I’m going to leave that for now until I learn some more Haskell!</p>
+
+<h1 id="printing-quotes">Printing Quotes</h1>
+
+<blockquote>
+  <p>Create a program that promts for a quote and an author. Display the quotation and author in the specified format.</p>
+
+  <p><strong>Constraints:</strong> Use a single output statement to produce this output. Use string concatenation (not templates).</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">putStr</span> <span class="s">"What is the quote? "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">quote</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStr</span> <span class="s">"Who said it? "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">author</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    
+    <span class="n">putStrLn</span> <span class="p">(</span><span class="n">author</span> <span class="o">++</span> <span class="s">" says, </span><span class="se">\"</span><span class="s">"</span> <span class="o">++</span> <span class="n">quote</span> <span class="o">++</span> <span class="s">"</span><span class="se">\"</span><span class="s">"</span><span class="p">)</span></code></pre></figure>
+
+<p>This is very similar to the other programs. I had to escape the double quotes with a <code class="highlighter-rouge">\</code>.</p>
+
+<blockquote>
+  <p>Modify this program so that instead of prompting for quotes from the user, you create a structure that holds quotes  and their associated attributions and then display all of the quotes using the specified format.</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+
+<span class="n">quotes</span> <span class="o">::</span> <span class="p">[(</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">)]</span>
+<span class="n">quotes</span> <span class="o">=</span>
+    <span class="p">[(</span><span class="s">"Obi Wan Kenobi"</span><span class="p">,</span> <span class="s">"These aren't the droids you're looking for."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">"Neil Armstrong"</span><span class="p">,</span> <span class="s">"Houston, Tranquility Base here. The Eagle has landed."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">"Arnold Schwarzenegger"</span><span class="p">,</span> <span class="s">"I'll be back!"</span><span class="p">)]</span>
+
+<span class="n">printQuote</span> <span class="o">::</span> <span class="p">(</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+<span class="n">printQuote</span> <span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">quote</span><span class="p">)</span> <span class="o">=</span> <span class="n">putStrLn</span> <span class="p">(</span><span class="n">author</span> <span class="o">++</span> <span class="s">" says, </span><span class="se">\"</span><span class="s">"</span> <span class="o">++</span> <span class="n">quote</span> <span class="o">++</span> <span class="s">"</span><span class="se">\"</span><span class="s">"</span><span class="p">)</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">mapM_</span> <span class="n">printQuote</span> <span class="n">quotes</span></code></pre></figure>
+
+<p>This was an interesting modification. First I stored the quotes as a list of tuples with two <code class="highlighter-rouge">String</code> elements. Then I found the <code class="highlighter-rouge">mapM_</code> function that takes a data structure and a monadic action and applies the action to each element. I wrote a little function called <code class="highlighter-rouge">printQuote</code> to take an (author, quote) tuple and print it with some formatting. Then in <code class="highlighter-rouge">main</code> I call <code class="highlighter-rouge">mapM_</code> with two arguments, my printing function and the list of quotes, and behold, the quotes are printed.</p>
+
+<p>I feel like I’ve gone a little too far without learning some more fundamentals at this stage, but the chapter is almost over, only one more program to write.</p>
+
+<h1 id="mad-lib">Mad Lib</h1>
+
+<blockquote>
+  <p>Create a simple mad-lib program that prompts for a noun, a verb, an adverb, and an adjective and injects those into a story that you create.</p>
+
+  <p><strong>Constraints:</strong> Use a single output statement for this program. If your language supports string interpolation or string substitution, use it to build up the output</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-hs" data-lang="hs"><span class="kr">import</span> <span class="nn">System.IO</span>
+<span class="kr">import</span> <span class="nn">Text.Printf</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">putStr</span> <span class="s">"Enter a noun: "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">noun</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStr</span> <span class="s">"Enter a verb: "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">verb</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStr</span> <span class="s">"Enter an adjective: "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">adjective</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    <span class="n">putStr</span> <span class="s">"Enter an adverb: "</span>
+    <span class="n">hFlush</span> <span class="n">stdout</span>
+    <span class="n">adverb</span> <span class="o">&lt;-</span> <span class="n">getLine</span>
+    
+    <span class="kr">let</span> <span class="n">madlib</span> <span class="o">=</span> <span class="s">"If you %s your %s %s %s I will eat my hat!"</span>
+    
+    <span class="n">printf</span> <span class="n">madlib</span> <span class="n">verb</span> <span class="n">adjective</span> <span class="n">noun</span> <span class="n">adverb</span></code></pre></figure>
+
+<p>I found a <code class="highlighter-rouge">printf</code> function to do the string interpolation.</p>
+
+<p>There’s a challenge to add more inputs to the program to expand the story but I’m going to stop here and move on to the next chapter to work on some numeric problems and learn some more tricks before I try to write a larger program.</p>
+
+
+    </div>
+
+</article>
+
+                
+                </div>
+            </div>
+        </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="social-media-list">
+          <li>
+              <a href="/feed.xml"><span class="icon"><?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     id="RSSicon"
+     viewBox="0 0 8 8" width="256" height="256">
+
+  <title>RSS feed icon</title>
+
+  <style type="text/css">
+    .button {stroke: none; fill: none;}
+    .symbol {stroke: none; fill: #828282;}
+  </style>
+
+  <rect   class="button" width="8" height="8" rx="1.5" />
+  <circle class="symbol" cx="2" cy="6" r="1" />
+  <path   class="symbol" d="m 1,4 a 3,3 0 0 1 3,3 h 1 a 4,4 0 0 0 -4,-4 z" />
+  <path   class="symbol" d="m 1,2 a 5,5 0 0 1 5,5 h 1 a 6,6 0 0 0 -6,-6 z" />
+
+</svg></span> rss</a>
+
+          </li>
+          
+          <li>
+            <a href="https://github.com/peacefixation"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">peacefixation</span></a>
+
+          </li>
+          
+
+          
+            
+          
+          <li>
+              <a href="http://stackoverflow.com/users/966798/matt"><span class="icon"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100%"
+   height="100%"
+   id="svg4231"
+   version="1.1"
+     viewBox="0 0 64 64"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="New document 26">
+  <defs
+     id="defs4233">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 32 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="64 : 32 : 1"
+       inkscape:persp3d-origin="32 : 21.333333 : 1"
+       id="perspective4239" />
+    <inkscape:perspective
+       id="perspective4219"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.8890873"
+     inkscape:cx="-15.758389"
+     inkscape:cy="39.724597"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="674"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4236">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="path2830"
+       d="m 8.2066776,36.963544 4.4013074,0.04316 -0.153441,19.598393 29.291258,0 0,-19.527506 4.637782,0 0,24.287331 -38.200679,0 0.023777,-24.401371 z" />
+    <rect
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="rect3604"
+       y="48.549992"
+       x="15.383667"
+       height="4.881876"
+       width="22.944817" />
+    <rect
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="rect3606"
+       transform="matrix(0.9953749,0.09606666,-0.09606666,0.9953749,0,0)"
+       y="38.051189"
+       x="19.667879"
+       height="5.0039229"
+       width="23.066864" />
+    <rect
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="rect3606-1"
+       transform="matrix(0.96240291,0.27162592,-0.27162592,0.96240291,0,0)"
+       y="23.81143"
+       x="25.447008"
+       height="5.0039229"
+       width="23.066864" />
+    <rect
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="rect3606-1-3"
+       transform="matrix(0.85597805,0.51701216,-0.51701216,0.85597805,0,0)"
+       y="3.8206301"
+       x="29.64859"
+       height="5.0039229"
+       width="23.066864" />
+    <rect
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="rect3606-1-3-7"
+       transform="matrix(0.58242689,0.81288309,-0.81288309,0.58242689,0,0)"
+       y="-23.514734"
+       x="26.646437"
+       height="5.0039229"
+       width="23.066864" />
+    <rect
+       style="fill:#919191;fill-opacity:1;stroke:none"
+       id="rect3606-1-3-7-6"
+       transform="matrix(0.16480989,0.98632535,-0.98632535,0.16480989,0,0)"
+       y="-49.081326"
+       x="11.107887"
+       height="5.0039229"
+       width="23.066864" />
+  </g>
+</svg>
+</span><span class="username">matt</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+          <p>I'm a developer for a VoIP provider and do most of my work with Java and Asterisk. In my spare time I ride my mountain bike and listen to groovy music.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+    </body>
+
+</html>

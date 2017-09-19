@@ -9,7 +9,7 @@
 title: "Matt Jarvis"
 email: 
 description: > # this means to ignore newlines until "baseurl:"
-    My name is Matt, I'm a developer for a VoIP provider and work with Java and Linux mostly. Outside of work I like mountains, bicycles and groovy tunes.
+    I'm a developer for a VoIP provider and do most of my work with Java and Asterisk. In my spare time I ride my mountain bike and listen to groovy music.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://peacefixation.github.io" # the base hostname & protocol for your site
 twitter_username:
