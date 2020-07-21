@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.74.2 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Matt Jarvis">
+<meta name="keywords" content="">
+<meta name="description" content="It&rsquo;s time for some more Haskell. I&rsquo;m going to work through chapter 2 of Exercises for Programmers: 57 Challenges to Develop Your Coding Skills and see what happens.
+Saying Hello  Create a program that prompts for your name and prints a greeting using your name.
+Constraints: Keep the input, string concatenation, and output separate.
+ import System.IO main = do hSetBuffering stdout NoBuffering hSetBuffering stdin NoBuffering putStr (&#34;What is your name?">
+
+
+<meta property="og:description" content="It&rsquo;s time for some more Haskell. I&rsquo;m going to work through chapter 2 of Exercises for Programmers: 57 Challenges to Develop Your Coding Skills and see what happens.
+Saying Hello  Create a program that prompts for your name and prints a greeting using your name.
+Constraints: Keep the input, string concatenation, and output separate.
+ import System.IO main = do hSetBuffering stdout NoBuffering hSetBuffering stdin NoBuffering putStr (&#34;What is your name?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learn you more Haskell">
+<meta name="twitter:title" content="Learn you more Haskell">
+<meta property="og:url" content="https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+<meta property="twitter:url" content="https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+<meta property="og:site_name" content="Matt Jarvis">
+<meta property="og:description" content="It&rsquo;s time for some more Haskell. I&rsquo;m going to work through chapter 2 of Exercises for Programmers: 57 Challenges to Develop Your Coding Skills and see what happens.
+Saying Hello  Create a program that prompts for your name and prints a greeting using your name.
+Constraints: Keep the input, string concatenation, and output separate.
+ import System.IO main = do hSetBuffering stdout NoBuffering hSetBuffering stdin NoBuffering putStr (&#34;What is your name?">
+<meta name="twitter:description" content="It&rsquo;s time for some more Haskell. I&rsquo;m going to work through chapter 2 of Exercises for Programmers: 57 Challenges to Develop Your Coding Skills and see what happens.
+Saying Hello  Create a program that prompts for your name and prints a greeting using your name.
+Constraints: Keep the input, string concatenation, and output separate.
+ import System.IO main = do hSetBuffering stdout NoBuffering hSetBuffering stdin NoBuffering putStr (&#34;What is your name?">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2016-05-26T12:51:12">
+  
+  
+    <meta property="article:modified_time" content="2016-05-26T12:51:12">
+  
+  
+  
+    
+      <meta property="article:section" content="development">
+    
+  
+  
+    
+      <meta property="article:tag" content="development">
+    
+      <meta property="article:tag" content="haskell">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=640">
+
+
+    <title>Learn you more Haskell</title>
+
+    <link rel="icon" href="https://peacefixation.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://peacefixation.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://peacefixation.github.io/">Matt Jarvis</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://peacefixation.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=90" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://peacefixation.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=110" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Matt Jarvis</h4>
+        
+          <h5 class="sidebar-profile-bio">I write software and love music</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/peacefixation" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/966798/matt" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Learn you more Haskell
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2016-05-26T12:51:12&#43;11:00">
+        
+  May 26, 2016
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://peacefixation.github.io/categories/development">development</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>It&rsquo;s time for some more Haskell. I&rsquo;m going to work through chapter 2 of <a href="https://www.amazon.com/Exercises-Programmers-Challenges-Develop-Coding/dp/1680501224">Exercises for Programmers: 57 Challenges to Develop Your Coding Skills</a> and see what happens.</p>
+<h1 id="saying-hello">Saying Hello</h1>
+<blockquote>
+<p>Create a program that prompts for your name and prints a greeting using your name.</p>
+<p><strong>Constraints:</strong> Keep the input, string concatenation, and output separate.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    hSetBuffering stdout <span style="color:#66d9ef">NoBuffering</span>
+    hSetBuffering stdin <span style="color:#66d9ef">NoBuffering</span>
+
+    putStr (<span style="color:#e6db74">&#34;What is your name? &#34;</span>)
+    name <span style="color:#f92672">&lt;-</span> getLine
+
+    <span style="color:#66d9ef">let</span> greeting <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello, &#34;</span> <span style="color:#f92672">++</span> name <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34;, nice to meet you!&#34;</span>
+
+    putStrLn (greeting)</code></pre></div>
+<p>Well, that was simpler than my first program and there&rsquo;s nothing new to mention so I&rsquo;ll move straight on to the first challenge.</p>
+<blockquote>
+<p>Write a new version of the program without using any variables</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">greet</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">String</span>
+<span style="color:#a6e22e">greet</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello, &#34;</span> <span style="color:#f92672">++</span> name <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34;, nice to meet you!&#34;</span>
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    hSetBuffering stdout <span style="color:#66d9ef">NoBuffering</span>
+    hSetBuffering stdin <span style="color:#66d9ef">NoBuffering</span>
+
+    putStr <span style="color:#e6db74">&#34;What is your name? &#34;</span>
+    name <span style="color:#f92672">&lt;-</span> getLine
+    putStrLn (greet name)</code></pre></div>
+<p>I thought about this for a while and I would like to solve it by writing functions and combining them. I can write a function <code>greet</code> to concatenate the name and greeting but I&rsquo;m not sure how to write the function that prints the question and returns the name that the user enters as a <code>String</code> instead of an <code>IO String</code>, so I&rsquo;m still using one variable that binds to the value that <code>GetLine</code> produces. I&rsquo;ll come back to this once I learn some more about monads.</p>
+<blockquote>
+<p>Write a version of the program that displays different greetings for different people.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">greet</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">String</span>
+<span style="color:#a6e22e">greet</span> <span style="color:#e6db74">&#34;Bob&#34;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello, Bob, great to see you!&#34;</span>
+<span style="color:#a6e22e">greet</span> <span style="color:#e6db74">&#34;Alice&#34;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello, Alice, it&#39;s been too long!&#34;</span>
+<span style="color:#a6e22e">greet</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello, &#34;</span> <span style="color:#f92672">++</span> name <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34;, nice to meet you!&#34;</span>
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    hSetBuffering stdout <span style="color:#66d9ef">NoBuffering</span>
+    hSetBuffering stdin <span style="color:#66d9ef">NoBuffering</span>
+
+    putStr <span style="color:#e6db74">&#34;What is your name? &#34;</span>
+    name <span style="color:#f92672">&lt;-</span> getLine
+    putStrLn (greet name)</code></pre></div>
+<p>I extended the <code>greet</code> function to greet Bob and Alice differently by using pattern matching on the input parameter.</p>
+<p>Let&rsquo;s move onto to the next part of the chapter.</p>
+<h1 id="counting-the-number-of-characters">Counting the Number of Characters</h1>
+<blockquote>
+<p>Create a program that prompts for an input string and displays output that shows the input string and the number of characters the string contains.</p>
+<p><strong>Constraints:</strong> Be sure the output contains the original string. Use a single output statement to construct the output. Use a built-in function of the programming language to determine the length of the string.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    hSetBuffering stdout <span style="color:#66d9ef">NoBuffering</span>
+    hSetBuffering stdin <span style="color:#66d9ef">NoBuffering</span>
+
+    putStr <span style="color:#e6db74">&#34;What is the input string? &#34;</span>
+    input <span style="color:#f92672">&lt;-</span> getLine
+    putStrLn (input <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34; has &#34;</span> <span style="color:#f92672">++</span> show (length input) <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34; characters&#34;</span>)</code></pre></div>
+<p>I use the built in <code>length</code> function to calculate the length of the input and because it&rsquo;s an <code>Integer</code> I use <code>show</code> to get its <code>String</code> representation.</p>
+<blockquote>
+<p>If the user enters nothing, state that the user must enter something into the program</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">prompt</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">prompt</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    putStr <span style="color:#e6db74">&#34;What is the input string? &#34;</span>
+    hFlush stdout
+    str <span style="color:#f92672">&lt;-</span> getLine
+
+    <span style="color:#66d9ef">if</span> length str <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>
+        <span style="color:#66d9ef">then</span> putStrLn (str <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34; has &#34;</span> <span style="color:#f92672">++</span> show (length str) <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34; characters&#34;</span>)
+    <span style="color:#66d9ef">else</span> prompt
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    prompt</code></pre></div>
+<p>Here I made a function called <code>prompt</code> that asks the user to input a string. If the length of the string is greater than 0 then I print the output, otherwise I recursively call <code>prompt</code> again to ask the user for input. I also saw how to use <code>hFlush stdout</code> when I need to flush the output which is much nicer than the <code>hSetBuffering stdout NoBuffering</code> and <code>hSetBuffering stdin NoBuffering</code> I was doing before.</p>
+<p>There is a third challenge to implement the program with a GUI, but I&rsquo;m going to leave that for now until I learn some more Haskell!</p>
+<h1 id="printing-quotes">Printing Quotes</h1>
+<blockquote>
+<p>Create a program that promts for a quote and an author. Display the quotation and author in the specified format.</p>
+<p><strong>Constraints:</strong> Use a single output statement to produce this output. Use string concatenation (not templates).</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    putStr <span style="color:#e6db74">&#34;What is the quote? &#34;</span>
+    hFlush stdout
+    quote <span style="color:#f92672">&lt;-</span> getLine
+    putStr <span style="color:#e6db74">&#34;Who said it? &#34;</span>
+    hFlush stdout
+    author <span style="color:#f92672">&lt;-</span> getLine
+
+    putStrLn (author <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34; says, </span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">++</span> quote <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">&#34;</span>)</code></pre></div>
+<p>This is very similar to the other programs. I had to escape the double quotes with a <code>\</code>.</p>
+<blockquote>
+<p>Modify this program so that instead of prompting for quotes from the user, you create a structure that holds quotes  and their associated attributions and then display all of the quotes using the specified format.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+
+<span style="color:#a6e22e">quotes</span> <span style="color:#f92672">::</span> [(<span style="color:#66d9ef">String</span>, <span style="color:#66d9ef">String</span>)]
+<span style="color:#a6e22e">quotes</span> <span style="color:#f92672">=</span>
+    [(<span style="color:#e6db74">&#34;Obi Wan Kenobi&#34;</span>, <span style="color:#e6db74">&#34;These aren&#39;t the droids you&#39;re looking for.&#34;</span>),
+    (<span style="color:#e6db74">&#34;Neil Armstrong&#34;</span>, <span style="color:#e6db74">&#34;Houston, Tranquility Base here. The Eagle has landed.&#34;</span>),
+    (<span style="color:#e6db74">&#34;Arnold Schwarzenegger&#34;</span>, <span style="color:#e6db74">&#34;I&#39;ll be back!&#34;</span>)]
+
+<span style="color:#a6e22e">printQuote</span> <span style="color:#f92672">::</span> (<span style="color:#66d9ef">String</span>, <span style="color:#66d9ef">String</span>) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">printQuote</span> (author, quote) <span style="color:#f92672">=</span> putStrLn (author <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34; says, </span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">++</span> quote <span style="color:#f92672">++</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">&#34;</span>)
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    mapM_ printQuote quotes</code></pre></div>
+<p>This was an interesting modification. First I stored the quotes as a list of tuples with two <code>String</code> elements. Then I found the <code>mapM_</code> function that takes a data structure and a monadic action and applies the action to each element. I wrote a little function called <code>printQuote</code> to take an (author, quote) tuple and print it with some formatting. Then in <code>main</code> I call <code>mapM_</code> with two arguments, my printing function and the list of quotes, and behold, the quotes are printed.</p>
+<p>I feel like I&rsquo;ve gone a little too far without learning some more fundamentals at this stage, but the chapter is almost over, only one more program to write.</p>
+<h1 id="mad-lib">Mad Lib</h1>
+<blockquote>
+<p>Create a simple mad-lib program that prompts for a noun, a verb, an adverb, and an adjective and injects those into a story that you create.</p>
+<p><strong>Constraints:</strong> Use a single output statement for this program. If your language supports string interpolation or string substitution, use it to build up the output</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">import</span> System.IO
+<span style="color:#66d9ef">import</span> Text.Printf
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+    putStr <span style="color:#e6db74">&#34;Enter a noun: &#34;</span>
+    hFlush stdout
+    noun <span style="color:#f92672">&lt;-</span> getLine
+    putStr <span style="color:#e6db74">&#34;Enter a verb: &#34;</span>
+    hFlush stdout
+    verb <span style="color:#f92672">&lt;-</span> getLine
+    putStr <span style="color:#e6db74">&#34;Enter an adjective: &#34;</span>
+    hFlush stdout
+    adjective <span style="color:#f92672">&lt;-</span> getLine
+    putStr <span style="color:#e6db74">&#34;Enter an adverb: &#34;</span>
+    hFlush stdout
+    adverb <span style="color:#f92672">&lt;-</span> getLine
+
+    <span style="color:#66d9ef">let</span> madlib <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;If you %s your %s %s %s I will eat my hat!&#34;</span>
+
+    printf madlib verb adjective noun adverb</code></pre></div>
+<p>I found a <code>printf</code> function to do the string interpolation.</p>
+<p>There&rsquo;s a challenge to add more inputs to the program to expand the story but I&rsquo;m going to stop here and move on to the next chapter to work on some numeric problems and learn some more tricks before I try to write a larger program.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://peacefixation.github.io/tags/development/">development</a>
+
+  <a class="tag tag--primary tag--small" href="https://peacefixation.github.io/tags/haskell/">haskell</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2017/08/asterisk-syntax-highlighting-extension-for-visual-studio-code/" data-tooltip="Asterisk syntax highlighting extension for Visual Studio Code">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2016/05/learn-you-a-haskell/" data-tooltip="Learn you a Haskell">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 Matt Jarvis. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2017/08/asterisk-syntax-highlighting-extension-for-visual-studio-code/" data-tooltip="Asterisk syntax highlighting extension for Visual Studio Code">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2016/05/learn-you-a-haskell/" data-tooltip="Learn you a Haskell">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://peacefixation.github.io/2016/05/learn-you-more-haskell/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpeacefixation.github.io%2F2016%2F05%2Flearn-you-more-haskell%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fpeacefixation.github.io%2F2016%2F05%2Flearn-you-more-haskell%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fpeacefixation.github.io%2F2016%2F05%2Flearn-you-more-haskell%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=110" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Matt Jarvis</h4>
+    
+      <div id="about-card-bio">I write software and love music</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Developer
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Australia
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://peacefixation.github.io/images/Mt_Beauty_3_LG.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://peacefixation.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

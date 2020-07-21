@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>firefox on Matt Jarvis</title>
+    <link>https://peacefixation.github.io/tags/firefox/</link>
+    <description>Recent content in firefox on Matt Jarvis</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 06 Feb 2019 19:49:45 +1100</lastBuildDate>
+    
+	<atom:link href="https://peacefixation.github.io/tags/firefox/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Firefox Extension: Github Gists</title>
+      <link>https://peacefixation.github.io/2019/02/firefox-extension-github-gists/</link>
+      <pubDate>Wed, 06 Feb 2019 19:49:45 +1100</pubDate>
+      
+      <guid>https://peacefixation.github.io/2019/02/firefox-extension-github-gists/</guid>
+      <description>I store snippets of code with Github Gists to remind myself how to do things that I don&amp;rsquo;t do regularly enough to remember off hand. At first it was only a few, but my list is growing and as it grows it becomes harder to find the one I want. I&amp;rsquo;ve made myself a little Firefox extension to list all my Gists with a search field so I can quickly locate them.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>haskell on Matt Jarvis</title>
+    <link>https://peacefixation.github.io/tags/haskell/</link>
+    <description>Recent content in haskell on Matt Jarvis</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 26 May 2016 12:51:12 +1100</lastBuildDate>
+    
+	<atom:link href="https://peacefixation.github.io/tags/haskell/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Learn you more Haskell</title>
+      <link>https://peacefixation.github.io/2016/05/learn-you-more-haskell/</link>
+      <pubDate>Thu, 26 May 2016 12:51:12 +1100</pubDate>
+      
+      <guid>https://peacefixation.github.io/2016/05/learn-you-more-haskell/</guid>
+      <description>It&amp;rsquo;s time for some more Haskell. I&amp;rsquo;m going to work through chapter 2 of Exercises for Programmers: 57 Challenges to Develop Your Coding Skills and see what happens.
+Saying Hello  Create a program that prompts for your name and prints a greeting using your name.
+Constraints: Keep the input, string concatenation, and output separate.
+ import System.IO main = do hSetBuffering stdout NoBuffering hSetBuffering stdin NoBuffering putStr (&amp;#34;What is your name?</description>
+    </item>
+    
+    <item>
+      <title>Learn you a Haskell</title>
+      <link>https://peacefixation.github.io/2016/05/learn-you-a-haskell/</link>
+      <pubDate>Tue, 10 May 2016 15:26:12 +1100</pubDate>
+      
+      <guid>https://peacefixation.github.io/2016/05/learn-you-a-haskell/</guid>
+      <description>I&amp;rsquo;ve been reading about functional programming lately, and I want to learn a new language to try it out properly. I picked Haskell for a few reasons. First, it&amp;rsquo;s touted as a pure functional language, and that appeals to me because I want to learn functional programming in particular, and not have the concepts blurred by a hybrid language. Second, there&amp;rsquo;s a lot of good online resources that I can learn from.</description>
+    </item>
+    
+  </channel>
+</rss>

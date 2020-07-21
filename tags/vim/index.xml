@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vim on Matt Jarvis</title>
+    <link>https://peacefixation.github.io/tags/vim/</link>
+    <description>Recent content in vim on Matt Jarvis</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 11 Sep 2017 19:41:00 +1000</lastBuildDate>
+    
+	<atom:link href="https://peacefixation.github.io/tags/vim/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clean SQL embedded in source files with Vim</title>
+      <link>https://peacefixation.github.io/2017/09/clean-sql-embedded-in-source-files-with-vim/</link>
+      <pubDate>Mon, 11 Sep 2017 19:41:00 +1000</pubDate>
+      
+      <guid>https://peacefixation.github.io/2017/09/clean-sql-embedded-in-source-files-with-vim/</guid>
+      <description>There&amp;rsquo;s a task I perform regularly and it&amp;rsquo;s always a 2 step process. One of the programs I maintain queries the database and the SQL is a long series of concatenated strings in a Java source file. I copy the query into a text editor and then remove all the quotes and plus characters so I can modify and test it on the database. Ideally SQL would be kept in an SQL file and it would be easier to work with, but in this case I don&amp;rsquo;t have the liberty of making that modification.</description>
+    </item>
+    
+    <item>
+      <title>Add an offset to a list of numbers with Vim</title>
+      <link>https://peacefixation.github.io/2017/08/add-an-offset-to-a-list-of-numbers-with-vim/</link>
+      <pubDate>Wed, 30 Aug 2017 21:00:00 +1000</pubDate>
+      
+      <guid>https://peacefixation.github.io/2017/08/add-an-offset-to-a-list-of-numbers-with-vim/</guid>
+      <description>Today I was given a task to extract customer account IDs from a log file. grep came to the rescue, however I was then required to add a fixed offset to each account ID so I could build an SQL query with an IN clause. I could have managed this by piping the output of grep to awk or bc, but I thought I would flex my vim muscle in this case.</description>
+    </item>
+    
+  </channel>
+</rss>
