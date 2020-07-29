@@ -6,10 +6,19 @@
     <description>Recent content on Matt Jarvis</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 May 2020 17:00:00 +1000</lastBuildDate>
+    <lastBuildDate>Tue, 21 Jul 2020 21:37:50 +1000</lastBuildDate>
     
 	<atom:link href="https://peacefixation.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Learning Go</title>
+      <link>https://peacefixation.github.io/2020/07/learning-go/</link>
+      <pubDate>Tue, 21 Jul 2020 21:37:50 +1000</pubDate>
+      
+      <guid>https://peacefixation.github.io/2020/07/learning-go/</guid>
+      <description>We&amp;rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&amp;rsquo; at you Xerces).</description>
+    </item>
     
     <item>
       <title>Attempted Vortex: a DJ mix</title>
@@ -26,7 +35,7 @@
       <pubDate>Sat, 04 Apr 2020 19:00:00 +1000</pubDate>
       
       <guid>https://peacefixation.github.io/2020/04/transcend-isolation-a-dj-mix/</guid>
-      <description>In the first few weeks of pandemic isolation I setup Ableton again and had some fun mixing tunes. This is one I&amp;rsquo;ve been wanting to get out for a long time: big, fat progressive-house, dark on the bottom, shiny on the top, a bit silly in places, and straight from my heart.
+      <description>In the first few weeks of pandemic isolation I setup Ableton again and had some fun mixing tunes. This is one I&amp;rsquo;ve been wanting to get out for a long time: big, fat progressive-house, heavy groove, shiny on the top, a bit silly in places and straight from my heart.
 
  </description>
     </item>

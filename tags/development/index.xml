@@ -6,10 +6,19 @@
     <description>Recent content in development on Matt Jarvis</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Feb 2019 19:49:45 +1100</lastBuildDate>
+    <lastBuildDate>Tue, 21 Jul 2020 21:37:50 +1000</lastBuildDate>
     
 	<atom:link href="https://peacefixation.github.io/tags/development/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Learning Go</title>
+      <link>https://peacefixation.github.io/2020/07/learning-go/</link>
+      <pubDate>Tue, 21 Jul 2020 21:37:50 +1000</pubDate>
+      
+      <guid>https://peacefixation.github.io/2020/07/learning-go/</guid>
+      <description>We&amp;rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&amp;rsquo; at you Xerces).</description>
+    </item>
     
     <item>
       <title>Firefox Extension: Github Gists</title>
