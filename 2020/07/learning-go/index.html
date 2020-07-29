@@ -8,18 +8,18 @@
 <meta name="generator" content="Hugo 0.74.2 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Matt Jarvis">
 <meta name="keywords" content="">
-<meta name="description" content="We&rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&rsquo; at you Xerces).">
+<meta name="description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
 
 
-<meta property="og:description" content="We&rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&rsquo; at you Xerces).">
+<meta property="og:description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Learning Go">
 <meta name="twitter:title" content="Learning Go">
 <meta property="og:url" content="https://peacefixation.github.io/2020/07/learning-go/">
 <meta property="twitter:url" content="https://peacefixation.github.io/2020/07/learning-go/">
 <meta property="og:site_name" content="Matt Jarvis">
-<meta property="og:description" content="We&rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&rsquo; at you Xerces).">
-<meta name="twitter:description" content="We&rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&rsquo; at you Xerces).">
+<meta property="og:description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
+<meta name="twitter:description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
 <meta property="og:locale" content="en-us">
 
   
@@ -243,8 +243,126 @@
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>We&rsquo;ve been making the transition from Java to Go at my workplace for the last year or so. We write web applications and Java has been a good language to use with its powerful frameworks (EJB, JPA), tooling and 3rd party libraries. It is a heavy language, however. A lot of development time was taken up with long compile times and complicated deployments, and the occassional dependency hell (lookin&rsquo; at you Xerces).</p>
-<p>With a few greenfield projects to wet our feet, we decided to give Go a shot. These projects were React JS web applications and required a backend to handle API requests and send JSON responses.</p>
+              <p>We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language. After a little thought, it occurred to me that re-writing *nix core utils would be a fun way to go about it. For the most part they are small, single function programs and should be fairly simple to figure out.</p>
+<p>As a quick introduction to Go, a simple program might look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+    <span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hello world!&#34;</span>)
+    }</code></pre></div>
+<p>The file is saved as <code>main.go</code>. It contains a package declaration, <code>main</code>, which is the root package name of a Go program. It also contains a function called <code>main</code> which is the starting point of the program. We import a package called <code>fmt</code> which provides, among other things, a <code>Println</code> function that will print text followed by a new line. You can run this program with the go command <code>go run main.go</code>.</p>
+<p>The first real program I wrote was <code>cat</code>. This program &ldquo;contatenates files and prints to standard output&rdquo;. I should be able to give it some arguments of the names of the files I would like to use for input, and it should print them one after the other to standard output i.e. <code>cat file1.txt file2.txt</code>. I should also be able to pipe input to the program i.e. <code>echo &quot;foo bar&quot; | cat</code></p>
+<p>Optionally, I would like to set a flag to number the output lines i.e. <code>cat -n file1.txt file2.txt</code>.</p>
+<p>There&rsquo;s a few key things that I need to implement to achieve this functionality. First, I need to be able to pass arguments to a Go console program. Go has a package called <code>flag</code> that handles this in a simple way. You create a flag with a name, a default and a description, and parse the flags that are given to store them in variables:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#a6e22e">numberLines</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;n&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;number output lines&#34;</span>)
+    <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()</code></pre></div>
+<p>Then you can check if numberLines (a boolean) is true, and if so the flag to number the lines was given.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">if</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">numberLines</span> {
+        <span style="color:#75715e">// flag was set
+</span><span style="color:#75715e"></span>    }</code></pre></div>
+<p>Notice here that I am dereferencing the <code>numberLines</code> variable with <code>*</code>. The variable is a pointer, and so to get the value of the variable you must dereference the pointer. If you access <code>numberLines</code> directly you will find the address of the pointer. Pointers allow us to &ldquo;pass by reference&rdquo; instead of &ldquo;pass by value&rdquo;. This way I can give you the address of a large object instead of a copy of the large object, and you can operate on the object itself instead of a copy of the object.</p>
+<p>Any other arguments passed to the program are accessible from the array returned from <code>flag.Args()</code>.</p>
+<p>The next thing I want to determine is whether my input comes from from filename arguments or from a pipe. I can achieve this by calling <code>info, _ := os.Stdin.Stat()</code> and then checking the file mode of the returned <code>info</code> variable.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#a6e22e">info</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>.<span style="color:#a6e22e">Stat</span>()
+
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Mode</span>() <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span>) <span style="color:#f92672">==</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span> {
+        <span style="color:#75715e">// stdin is a character device
+</span><span style="color:#75715e"></span>    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Size</span>() &gt; <span style="color:#ae81ff">0</span> {
+        <span style="color:#75715e">// stdin is not a character device and there is data available
+</span><span style="color:#75715e"></span>    }</code></pre></div>
+<p>Notice that <code>os.Stdin.Stat()</code> returns 2 variables, and I ignore one of them with <code>_</code>.</p>
+<p>Now we&rsquo;re ready to handle whatever input we are given. We need a function that can take a file and print it to standard output. This function creates a buffered file reader from the <code>bufio</code> package and reads lines (strings that end with <code>\n</code>) until it finds the end of the file which is apparent when <code>reader.ReadString()</code> returns a specific error <code>io.EOF</code>. Each line that is read is printed to the standard output.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">file</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">File</span>)  {
+        <span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">file</span>)
+        <span style="color:#66d9ef">for</span> {
+            <span style="color:#a6e22e">line</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">ReadString</span>(<span style="color:#e6db74">&#39;\n&#39;</span>)
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span> {
+                <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s\n&#34;</span>, <span style="color:#a6e22e">line</span>)
+                <span style="color:#66d9ef">break</span>
+            }
+
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+                <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;Read error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+            }
+
+            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">line</span>)
+        }
+    }</code></pre></div>
+<p>Notice that the function is defined with the keyword <code>func</code> and arguments are defined with a name first, and then a type (which is the opposite to most other languages I know) <code>file *os.File</code> is an argument named <code>file</code> of type <code>*os.File</code>, a pointer to type <code>os.File</code>. This function doesn&rsquo;t return anything.</p>
+<p>To handle the optional &ldquo;number output lines&rdquo; flag, I enhance this function to keep track of the line number:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">file</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">File</span>, <span style="color:#a6e22e">startLineNumber</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+        <span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">file</span>)
+        <span style="color:#66d9ef">for</span> {
+            <span style="color:#a6e22e">numberStr</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;&#34;</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">startLineNumber</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {
+                <span style="color:#a6e22e">numberStr</span> = <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">startLineNumber</span>)
+            }
+
+            <span style="color:#a6e22e">line</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">ReadString</span>(<span style="color:#e6db74">&#39;\n&#39;</span>)
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span> {
+                <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%8s%s\n&#34;</span>, <span style="color:#a6e22e">numberStr</span>, <span style="color:#a6e22e">line</span>)
+                <span style="color:#66d9ef">break</span>
+            }
+
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+                <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;Read error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+            }
+
+            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%8s%s&#34;</span>, <span style="color:#a6e22e">numberStr</span>, <span style="color:#a6e22e">line</span>)
+            <span style="color:#a6e22e">startLineNumber</span><span style="color:#f92672">++</span>
+        }
+
+        <span style="color:#a6e22e">startLineNumber</span><span style="color:#f92672">++</span> <span style="color:#75715e">// increment for next file
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">startLineNumber</span>
+    }</code></pre></div>
+<p>The function now has an extra argument <code>startLineNumber</code> of type <code>int</code> and also returns a value of type <code>int</code> which is made clear after the parentheses containing the arguments.</p>
+<p>With all of this work done, we are ready to handle the filenames, or the piped data, that was given to the program and print it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+        <span style="color:#a6e22e">numberLines</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;n&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;number output lines&#34;</span>)
+        <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+
+        <span style="color:#a6e22e">info</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>.<span style="color:#a6e22e">Stat</span>()
+
+        <span style="color:#a6e22e">startLineNumber</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">numberLines</span> {
+            <span style="color:#a6e22e">startLineNumber</span> = <span style="color:#ae81ff">1</span>
+        }
+
+        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Mode</span>() <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span>) <span style="color:#f92672">==</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span> {
+            <span style="color:#75715e">// were there any filenames as arguments?
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">NArg</span>() &lt; <span style="color:#ae81ff">1</span> {
+                <span style="color:#a6e22e">usage</span>()
+            }
+
+            <span style="color:#75715e">// print each file to stdout
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">filename</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Args</span>() {
+                <span style="color:#75715e">// open the file
+</span><span style="color:#75715e"></span>                <span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">OpenFile</span>(<span style="color:#a6e22e">filename</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">O_RDONLY</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModePerm</span>)
+                <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+                    <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;File error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+                }
+                <span style="color:#75715e">// make sure the file is closed when we&#39;re done
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Close</span>()
+
+                <span style="color:#75715e">// print the file
+</span><span style="color:#75715e"></span>                <span style="color:#a6e22e">startLineNumber</span> = <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">startLineNumber</span>)
+            }
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Size</span>() &gt; <span style="color:#ae81ff">0</span> {
+            <span style="color:#75715e">// print lines piped to standard input
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>, <span style="color:#a6e22e">startLineNumber</span>)
+        }
+    }</code></pre></div>
+<p>Here we check the file mode of standard input. If the mode is &lsquo;character device&rsquo; then we expect filenames as arguments. If there were none, we exit with a usage message. Otherwise we iterate over each argument with a for loop which has the form <code>for index, filename := range flag.Args()</code>. Notice that my usage is <code>for _, filename := range flag.Args()</code>. <code>range</code> returns both the index and the element but I don&rsquo;t need to use the index so I ignore it with <code>_</code>.</p>
+<p>For each filename, I attempt to open the file in read only mode <code>file, err := os.OpenFile(filename, os.O_RDONLY, os.ModePerm)</code>. If there is an error, I log a message and exit the program with a fatal error.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;File error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+    }</code></pre></div>
+<p>This error handling idiom is common practise in Go. You will often see <code>if err != nil { // handle the error }</code> and you should generally write functions that return errors to be checked in this way.</p>
+<p>I also call <code>defer file.Close()</code>. The defer statement is a way of ensuring that a function is called when the surrounding function returns. By calling <code>file.Close()</code> with <code>defer</code> we are making sure that whatever else happens down the track (other errors perhaps), our file will be closed.</p>
+<p>If the file is opened without error, I print the file and keep track of the line number so that can be printed as well.</p>
+<p>And there we have it, a simple implementation of <code>cat</code> written in Go. You can see the full source at <a href="https://github.com/peacefixation/go-exercises/blob/master/cat/cat.go">Github</a>. I&rsquo;ll write articles about some of my other implementations of core utils in the future.</p>
 
               
             </div>
@@ -272,17 +390,17 @@
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2020/05/attempted-vortex-a-dj-mix/" data-tooltip="Attempted Vortex: a DJ mix">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
                 </a>
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2020/05/attempted-vortex-a-dj-mix/" data-tooltip="Attempted Vortex: a DJ mix">
               
-                  <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -348,17 +466,17 @@
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2020/05/attempted-vortex-a-dj-mix/" data-tooltip="Attempted Vortex: a DJ mix">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
                 </a>
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2020/05/attempted-vortex-a-dj-mix/" data-tooltip="Attempted Vortex: a DJ mix">
               
-                  <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
