@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.74.2 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Matt Jarvis">
+<meta name="keywords" content="">
+<meta name="description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
+
+
+<meta property="og:description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning Go By Implementing Cat">
+<meta name="twitter:title" content="Learning Go By Implementing Cat">
+<meta property="og:url" content="https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+<meta property="twitter:url" content="https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+<meta property="og:site_name" content="Matt Jarvis">
+<meta property="og:description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
+<meta name="twitter:description" content="We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2020-07-21T21:37:50">
+  
+  
+    <meta property="article:modified_time" content="2020-07-21T21:37:50">
+  
+  
+  
+    
+      <meta property="article:section" content="development">
+    
+  
+  
+    
+      <meta property="article:tag" content="development">
+    
+      <meta property="article:tag" content="go">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=640">
+
+
+    <title>Learning Go By Implementing Cat</title>
+
+    <link rel="icon" href="https://peacefixation.github.io/favicon.ico">
+    
+
+    
+
+    <link rel="canonical" href="https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://peacefixation.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://peacefixation.github.io/">Matt Jarvis</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://peacefixation.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=90" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://peacefixation.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=110" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Matt Jarvis</h4>
+        
+          <h5 class="sidebar-profile-bio">I write software and love music</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/peacefixation" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/966798/matt" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://peacefixation.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Learning Go By Implementing Cat
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-07-21T21:37:50&#43;10:00">
+        
+  July 21, 2020
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://peacefixation.github.io/categories/development">development</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>We&rsquo;ve been making the transition from Java to Go and React at the company I work for. Over the last year or so most of our new web applications consist of a Go backend and React front end. This has been a pleasant experience for the most part, but there&rsquo;s a lot to learn so I decided to write a bunch of Go programs on the side to explore the language. After a little thought, it occurred to me that re-writing *nix core utils would be a practical way to go about it. For the most part they are small, single function programs and should be fairly simple to figure out.</p>
+<p>As a lightning fast introduction to Go, a simple &ldquo;hello world&rdquo; program might look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+    <span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hello world!&#34;</span>)
+    }</code></pre></div>
+<p>The file is saved as <code>main.go</code>. It contains a package declaration, <code>main</code>, which is the root package name of a Go program. It also contains a function called <code>main</code> which is the starting point of the program. I import a package called <code>fmt</code> which provides, among other things, a <code>Println</code> function that will print a string followed by a new line. You can run this program with the go command <code>go run main.go</code>.</p>
+<p>The first real program I wrote was <code>cat</code>. This program &ldquo;contatenates files and prints to standard output&rdquo;. I should be able to give it some arguments of the names of the files I would like to use for input, and it should print them one after the other to standard output i.e. <code>cat file1.txt file2.txt</code>. I should also be able to pipe input to the program i.e. <code>echo &quot;foo bar&quot; | cat</code>.</p>
+<p>Optionally, I would like to set a flag to number the output lines i.e. <code>cat -n file1.txt file2.txt</code>.</p>
+<p>There&rsquo;s a few key things that I need to implement to achieve this functionality. First, I need to be able to pass arguments to a Go console program. Go has a package called <code>flag</code> that handles this in a simple way. You create a flag with a name, a default and a description, and parse the flags that are given to store them in variables:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#a6e22e">numberLines</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;n&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;number output lines&#34;</span>)
+    <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()</code></pre></div>
+<p>Then you can check if numberLines (a boolean) is true, and if so the flag to number the lines was given.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">if</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">numberLines</span> {
+        <span style="color:#75715e">// flag was set
+</span><span style="color:#75715e"></span>    }</code></pre></div>
+<p>Notice here that I am dereferencing the <code>numberLines</code> variable with <code>*</code>. The variable is a pointer, and so to get the value of the variable you must dereference the pointer. If you access <code>numberLines</code> directly you will find the address of the pointer. Pointers allow us to &ldquo;pass by reference&rdquo; instead of &ldquo;pass by value&rdquo;. This way I can give you the address of a large object instead of a copy of the large object, and you can operate on the object itself instead of a copy of the object.</p>
+<p>Any other arguments passed to the program are accessible from the array returned from <code>flag.Args()</code>.</p>
+<p>The next thing I want to determine is whether my input comes from filename arguments or from a pipe. I can achieve this by calling <code>info, _ := os.Stdin.Stat()</code> and then checking the file mode of the returned <code>info</code> variable.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#a6e22e">info</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>.<span style="color:#a6e22e">Stat</span>()
+
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Mode</span>() <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span>) <span style="color:#f92672">==</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span> {
+        <span style="color:#75715e">// stdin is a character device
+</span><span style="color:#75715e"></span>    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Size</span>() &gt; <span style="color:#ae81ff">0</span> {
+        <span style="color:#75715e">// stdin is not a character device and there is data available
+</span><span style="color:#75715e"></span>    }</code></pre></div>
+<p>Notice that <code>os.Stdin.Stat()</code> returns 2 variables, and I ignore one of them with <code>_</code>.</p>
+<p>Now I&rsquo;m ready to handle whatever input is given. I need a function that can take a file and print it to standard output.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">file</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">File</span>)  {
+        <span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">file</span>)
+        <span style="color:#66d9ef">for</span> {
+            <span style="color:#a6e22e">line</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">ReadString</span>(<span style="color:#e6db74">&#39;\n&#39;</span>)
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span> {
+                <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s\n&#34;</span>, <span style="color:#a6e22e">line</span>)
+                <span style="color:#66d9ef">break</span>
+            }
+
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+                <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;Read error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+            }
+
+            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">line</span>)
+        }
+    }</code></pre></div>
+<p>The function is defined with the keyword <code>func</code> and arguments with a name first, and then a type (which is the opposite to most other languages I know). <code>file *os.File</code> is an argument named <code>file</code> of type <code>*os.File</code>, a pointer to type <code>os.File</code>. This function doesn&rsquo;t return anything.</p>
+<p>Inside the function I create a buffered file reader from the <code>bufio</code> package and read lines (strings that end with <code>\n</code>) until I find the end of the file which is apparent when <code>reader.ReadString()</code> returns a specific error <code>io.EOF</code>. The idiomatic method of error handling in Go is for functions to return errors for the caller to check.</p>
+<p>To handle the optional &ldquo;number output lines&rdquo; flag, I enhance this function to keep track of the line number.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">file</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">File</span>, <span style="color:#a6e22e">startLineNumber</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+        <span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">file</span>)
+        <span style="color:#66d9ef">for</span> {
+            <span style="color:#a6e22e">numberStr</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;&#34;</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">startLineNumber</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {
+                <span style="color:#a6e22e">numberStr</span> = <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">startLineNumber</span>)
+            }
+
+            <span style="color:#a6e22e">line</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">ReadString</span>(<span style="color:#e6db74">&#39;\n&#39;</span>)
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span> {
+                <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%8s%s\n&#34;</span>, <span style="color:#a6e22e">numberStr</span>, <span style="color:#a6e22e">line</span>)
+                <span style="color:#66d9ef">break</span>
+            }
+
+            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+                <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;Read error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+            }
+
+            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%8s%s&#34;</span>, <span style="color:#a6e22e">numberStr</span>, <span style="color:#a6e22e">line</span>)
+            <span style="color:#a6e22e">startLineNumber</span><span style="color:#f92672">++</span>
+        }
+
+        <span style="color:#a6e22e">startLineNumber</span><span style="color:#f92672">++</span> <span style="color:#75715e">// increment for next file
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">startLineNumber</span>
+    }</code></pre></div>
+<p>The function now has an extra argument <code>startLineNumber</code> of type <code>int</code> and also returns a value of type <code>int</code> which is made clear after the parentheses containing the arguments.</p>
+<p>With all of this work done I am ready to handle the filename arguments or the piped data as input to the program and call the <code>printFile</code> function to print it to standard output.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+        <span style="color:#a6e22e">numberLines</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;n&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;number output lines&#34;</span>)
+        <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+
+        <span style="color:#a6e22e">info</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>.<span style="color:#a6e22e">Stat</span>()
+
+        <span style="color:#a6e22e">startLineNumber</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">numberLines</span> {
+            <span style="color:#a6e22e">startLineNumber</span> = <span style="color:#ae81ff">1</span>
+        }
+
+        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Mode</span>() <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span>) <span style="color:#f92672">==</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModeCharDevice</span> {
+            <span style="color:#75715e">// were there any filenames as arguments?
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">NArg</span>() &lt; <span style="color:#ae81ff">1</span> {
+                <span style="color:#a6e22e">usage</span>()
+            }
+
+            <span style="color:#75715e">// print each file to stdout
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">filename</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Args</span>() {
+                <span style="color:#75715e">// open the file
+</span><span style="color:#75715e"></span>                <span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">OpenFile</span>(<span style="color:#a6e22e">filename</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">O_RDONLY</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ModePerm</span>)
+                <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+                    <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;File error: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+                }
+                <span style="color:#75715e">// make sure the file is closed when we&#39;re done
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Close</span>()
+
+                <span style="color:#75715e">// print the file
+</span><span style="color:#75715e"></span>                <span style="color:#a6e22e">startLineNumber</span> = <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">startLineNumber</span>)
+            }
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Size</span>() &gt; <span style="color:#ae81ff">0</span> {
+            <span style="color:#75715e">// print lines piped to standard input
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">printFile</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>, <span style="color:#a6e22e">startLineNumber</span>)
+        }
+    }</code></pre></div>
+<p>Here I check the file mode of standard input. If the mode is &ldquo;character device&rdquo; then I expect filenames as arguments. If there were none, exit with a usage message. Otherwise iterate over each argument with a for loop.</p>
+<p>For each filename, I attempt to open the file in read only mode <code>file, err := os.OpenFile(filename, os.O_RDONLY, os.ModePerm)</code>.
+I also call <code>defer file.Close()</code>. The defer statement is a way of ensuring that a function is called when the surrounding function returns. By calling <code>file.Close()</code> with <code>defer</code> I ensure that whatever else happens down the track (other errors perhaps), the file will be closed.
+If the file is opened without error, I print the file and keep track of the line number so that can be printed as well.</p>
+<p>If the file mode of standard input was not &ldquo;character device&rdquo; then I check to see if the size of the standard input is greater than zero and if it is I pass the file descriptor for standard input to the <code>printFile</code> function for printing.</p>
+<p>And there you have it, a simple implementation of <code>cat</code> written in Go. You can see the full source at <a href="https://github.com/peacefixation/go-exercises/blob/master/cat/cat.go">Github</a>. I&rsquo;ll write articles about some of my other implementations of core utils in the future.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://peacefixation.github.io/tags/development/">development</a>
+
+  <a class="tag tag--primary tag--small" href="https://peacefixation.github.io/tags/go/">go</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2020/05/attempted-vortex-a-dj-mix/" data-tooltip="Attempted Vortex: a DJ mix">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 Matt Jarvis. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://peacefixation.github.io/2020/05/attempted-vortex-a-dj-mix/" data-tooltip="Attempted Vortex: a DJ mix">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://peacefixation.github.io/2020/07/learning-go-by-implementing-cat/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpeacefixation.github.io%2F2020%2F07%2Flearning-go-by-implementing-cat%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fpeacefixation.github.io%2F2020%2F07%2Flearning-go-by-implementing-cat%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fpeacefixation.github.io%2F2020%2F07%2Flearning-go-by-implementing-cat%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://www.gravatar.com/avatar/9b52a10544df0260f8eab84b3bbea4bb?s=110" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Matt Jarvis</h4>
+    
+      <div id="about-card-bio">I write software and love music</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Developer
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Australia
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://peacefixation.github.io/images/Mt_Beauty_3_LG.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://peacefixation.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+
