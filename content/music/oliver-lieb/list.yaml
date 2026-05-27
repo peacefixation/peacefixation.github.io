@@ -1,0 +1,11 @@
+title: Oliver Lieb
+types:
+    - soundcloud
+    - youtube
+    - youtube-channel
+    - post
+    - link-plain
+    - link-opengraph
+cardTemplate: card.html
+sortBy: title
+sortOrder: asc
