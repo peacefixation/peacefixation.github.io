@@ -8,27 +8,27 @@ import (
 
 // SiteConfig is the top-level configuration for an SSG site.
 type SiteConfig struct {
-	Title        string      `mapstructure:"title"`
-	BaseURL      string      `mapstructure:"baseURL"`
-	CanonicalURL string      `mapstructure:"canonicalURL"`
-	ContentDir   string      `mapstructure:"contentDir"`
-	OutputDir    string      `mapstructure:"outputDir"`
-	StaticDir    string      `mapstructure:"staticDir"`
-	StaticJS     []string    `mapstructure:"staticJS"`
-	TemplateDir  string      `mapstructure:"templateDir"`
-	ThemesDir    string      `mapstructure:"themesDir"`
-	ItemsDir     string      `mapstructure:"itemsDir"`
-	Theme        string      `mapstructure:"theme"`
-	Defaults     Defaults    `mapstructure:"defaults"`
-	Server       ServerConfig `mapstructure:"server"`
-	Drafts       bool        `mapstructure:"-"`
-	SiteMap      bool        `mapstructure:"sitemap"`
-	OGCacheFile      string      `mapstructure:"ogCacheFile"`
-	RefreshOG        bool        `mapstructure:"-"`
-	YouTubeCacheFile string      `mapstructure:"youtubeCacheFile"`
-	RefreshYouTube   bool        `mapstructure:"-"`
-	YouTubeAPIKey    string      `mapstructure:"-"`
-	Tags             TagsConfig  `mapstructure:"tags"`
+	Title            string       `mapstructure:"title"`
+	BaseURL          string       `mapstructure:"baseURL"`
+	CanonicalURL     string       `mapstructure:"canonicalURL"`
+	ContentDir       string       `mapstructure:"contentDir"`
+	OutputDir        string       `mapstructure:"outputDir"`
+	StaticDir        string       `mapstructure:"staticDir"`
+	StaticJS         []string     `mapstructure:"staticJS"`
+	TemplateDir      string       `mapstructure:"templateDir"`
+	ThemesDir        string       `mapstructure:"themesDir"`
+	ItemsDir         string       `mapstructure:"itemsDir"`
+	Theme            string       `mapstructure:"theme"`
+	Defaults         Defaults     `mapstructure:"defaults"`
+	Server           ServerConfig `mapstructure:"server"`
+	Drafts           bool         `mapstructure:"-"`
+	SiteMap          bool         `mapstructure:"sitemap"`
+	OGCacheFile      string       `mapstructure:"ogCacheFile"`
+	RefreshOG        bool         `mapstructure:"-"`
+	YouTubeCacheFile string       `mapstructure:"youtubeCacheFile"`
+	RefreshYouTube   bool         `mapstructure:"-"`
+	YouTubeAPIKey    string       `mapstructure:"-"`
+	Tags             TagsConfig   `mapstructure:"tags"`
 }
 
 // SiteMapNode is one node in the site map tree.
@@ -69,13 +69,12 @@ type ItemConfig struct {
 	CardTemplate       string           `mapstructure:"cardTemplate"`
 	OutputPath         string           `mapstructure:"outputPath"`
 	DataSource         DataSourceConfig `mapstructure:"dataSource"`
-	DataSourceOverride any              `mapstructure:"-"` // holds a datasource.DataSource; avoids import cycle
-	Children             []ItemConfig
-	SortBy               string `mapstructure:"sortBy"`
-	SortOrder            string `mapstructure:"sortOrder"`
-	Limit                int    `mapstructure:"limit"`
-	ListType             string `mapstructure:"-"` // "photos" for image-scanning lists
-	ExcludeFromSiteMap   bool   `mapstructure:"-"`
+	Children           []ItemConfig
+	SortBy             string `mapstructure:"sortBy"`
+	SortOrder          string `mapstructure:"sortOrder"`
+	Limit              int    `mapstructure:"limit"`
+	ListType           string `mapstructure:"-"` // "photos" for image-scanning lists
+	ExcludeFromSiteMap bool   `mapstructure:"-"`
 }
 
 // TagsConfig controls the synthesized tags section of the site.

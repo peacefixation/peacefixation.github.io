@@ -7,8 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/peacefixation/ssg/internal/config"
-	"github.com/peacefixation/ssg/internal/datasource"
 )
 
 // stemOf returns the filename stem of path (base name without extension).
@@ -99,14 +97,3 @@ func copyFile(src, dest string) error {
 	return err
 }
 
-// getDS returns the datasource for itemCfg. If DataSourceOverride is set it
-// takes precedence over the registry, avoiding an import cycle by asserting
-// the stored value to datasource.DataSource.
-func getDS(itemCfg config.ItemConfig, registry *datasource.Registry) (datasource.DataSource, error) {
-	if itemCfg.DataSourceOverride != nil {
-		if ds, ok := itemCfg.DataSourceOverride.(datasource.DataSource); ok {
-			return ds, nil
-		}
-	}
-	return registry.New(itemCfg.DataSource)
-}
