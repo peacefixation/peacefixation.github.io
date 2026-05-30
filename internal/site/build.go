@@ -83,21 +83,17 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 		siteMap = buildSiteMap(rootItems, cfg.ItemsDir)
 	}
 
-	// Phase 4: Assemble — pure; no IO.
+	// Phase 4: Assemble — pure; no IO, no renderer dependency.
 	ctx := AssemblyContext{
-		Renderer:     r,
 		RootNavItems: rootNavItems,
 		ThemeData:    themeData,
 		SiteMap:      siteMap,
 		Cfg:          cfg,
 	}
-	pages, err := assembleTree(rootItems, ctx, nil)
-	if err != nil {
-		return 0, err
-	}
+	pages := assembleTree(rootItems, ctx, nil)
 
-	// Phase 5: Write — render templates and write HTML files.
-	return writeTree(pages, ctx, cfg.OutputDir)
+	// Phase 5: Write — render card specs and page templates, write HTML files.
+	return writeTree(pages, ctx, r, cfg.OutputDir)
 }
 
 // setupOutput cleans (if requested) and creates the output directory.

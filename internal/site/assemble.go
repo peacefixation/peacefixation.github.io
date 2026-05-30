@@ -1,34 +1,37 @@
 package site
 
 import (
-	"fmt"
-	"html/template"
 	"maps"
 	"sort"
 	"time"
 
 	"github.com/peacefixation/ssg/internal/config"
-	"github.com/peacefixation/ssg/internal/renderer"
 	"github.com/peacefixation/ssg/internal/theme"
 )
 
+// CardSpec describes a card to be rendered in the Write phase.
+// Data["List"] may itself be []CardSpec for nested list children.
+type CardSpec struct {
+	Template string
+	Data     map[string]any
+}
+
 // Page is the output of the Assemble phase: a fully assembled page with its
-// child card fragments pre-rendered and its ancestor chain recorded for
-// breadcrumbs. Page.Data contains content fields only — Site, Theme, RootItems,
+// child card specs and ancestor chain recorded for breadcrumbs.
+// Page.Data contains content fields only — Site, Theme, RootItems,
 // and other template context are not present until the Write phase.
 type Page struct {
 	Config    config.ItemConfig
 	Data      map[string]any
-	Cards     []template.HTML
+	CardSpecs []CardSpec
 	Ancestors []map[string]any
 	Children  []Page
 }
 
 // AssemblyContext carries the invariants shared across the whole tree during
-// assembly. It has no IO methods and no mutable state, so assembleTree is a
-// pure function given this context.
+// assembly. It has no IO methods, no mutable state, and no renderer dependency,
+// so assembleTree is a pure function.
 type AssemblyContext struct {
-	Renderer     *renderer.Renderer
 	RootNavItems []map[string]any
 	ThemeData    theme.Data
 	SiteMap      []config.SiteMapNode
@@ -36,41 +39,32 @@ type AssemblyContext struct {
 }
 
 // assembleTree assembles a slice of LoadedItems into a Page tree.
-// Each item's child cards are rendered from its assembled children, so card
-// rendering is bottom-up with no re-fetching and no snapshot needed.
-// assembleTree has no IO and can be tested in isolation.
-func assembleTree(items []LoadedItem, ctx AssemblyContext, ancestors []map[string]any) ([]Page, error) {
+// assembleTree is a pure function — no IO, no error path.
+func assembleTree(items []LoadedItem, ctx AssemblyContext, ancestors []map[string]any) []Page {
 	pages := make([]Page, 0, len(items))
 	for _, item := range items {
-		page, ok, err := assembleItem(item, ctx, ancestors)
-		if err != nil {
-			return nil, fmt.Errorf("assembling %q: %w", item.Config.Name, err)
-		}
+		page, ok := assembleItem(item, ctx, ancestors)
 		if !ok {
 			continue // draft
 		}
 		pages = append(pages, page)
 	}
-	return pages, nil
+	return pages
 }
 
 // assembleItem assembles a single LoadedItem and its descendants into a Page.
 // Returns ok=false when the item is a draft and drafts are not enabled.
-func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]any) (Page, bool, error) {
+func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]any) (Page, bool) {
 	if isDraft(item.Data) && !ctx.Cfg.Drafts {
-		return Page{}, false, nil
+		return Page{}, false
 	}
 
 	title, _ := item.Data["title"].(string)
 	childAncestors := appendAncestor(ancestors, title, item.Config.OutputPath)
+	childPages := assembleTree(item.Children, ctx, childAncestors)
 
-	childPages, err := assembleTree(item.Children, ctx, childAncestors)
-	if err != nil {
-		return Page{}, false, err
-	}
-
-	// Build card entries from assembled child pages. Each child's Cards field
-	// holds its own grandchild fragments, which are injected as List for list children.
+	// Build card entries from assembled child pages. Each child's CardSpecs field
+	// holds its own grandchild specs, which are deferred into List for list children.
 	entries := make([]cardEntry, 0, len(childPages))
 	for _, cp := range childPages {
 		e := cardEntry{
@@ -80,7 +74,7 @@ func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]a
 		e.data["outputPath"] = cp.Config.OutputPath
 		e.data["count"] = len(cp.Children)
 		if len(cp.Children) > 0 {
-			e.data["List"] = cp.Cards
+			e.data["List"] = cp.CardSpecs
 		}
 		entries = append(entries, e)
 	}
@@ -93,18 +87,13 @@ func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]a
 		entries = entries[:item.Config.Limit]
 	}
 
-	cards, err := renderCards(ctx.Renderer, item.Config, entries)
-	if err != nil {
-		return Page{}, false, err
-	}
-
 	return Page{
 		Config:    item.Config,
 		Data:      item.Data,
-		Cards:     cards,
+		CardSpecs: buildCardSpecs(item.Config, entries),
 		Ancestors: ancestors,
 		Children:  childPages,
-	}, true, nil
+	}, true
 }
 
 // cardEntry pairs an ItemConfig with the data needed for card rendering.
@@ -121,22 +110,18 @@ func appendAncestor(ancestors []map[string]any, title, outputPath string) []map[
 	return next
 }
 
-// renderCards renders a card fragment for each entry using the parent's card
+// buildCardSpecs builds a CardSpec for each entry using the parent's card
 // template, which individual entries may override via a "cardTemplate" field.
-func renderCards(r *renderer.Renderer, parent config.ItemConfig, entries []cardEntry) ([]template.HTML, error) {
-	fragments := make([]template.HTML, 0, len(entries))
+func buildCardSpecs(parent config.ItemConfig, entries []cardEntry) []CardSpec {
+	specs := make([]CardSpec, 0, len(entries))
 	for _, e := range entries {
 		cardTemplate := parent.CardTemplate
 		if t, ok := e.data["cardTemplate"].(string); ok && t != "" {
 			cardTemplate = t
 		}
-		fragment, err := r.RenderCard(cardTemplate, e.data)
-		if err != nil {
-			return nil, fmt.Errorf("rendering card for %q: %w", e.cfg.Name, err)
-		}
-		fragments = append(fragments, fragment)
+		specs = append(specs, CardSpec{Template: cardTemplate, Data: e.data})
 	}
-	return fragments, nil
+	return specs
 }
 
 // sortEntries sorts entries in-place by the given field.
