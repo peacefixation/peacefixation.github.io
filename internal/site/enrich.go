@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/peacefixation/ssg/internal/enricher"
+	"github.com/peacefixation/ssg/internal/enrich"
 	"gopkg.in/yaml.v3"
 )
 
@@ -39,55 +39,48 @@ func applyTypeDefaults(data map[string]any, defaults map[string]any) {
 	}
 }
 
-// forceRefreshItem reports whether item data contains og_refresh: true.
-func forceRefreshItem(data map[string]any) bool {
-	b, ok := data["og_refresh"].(bool)
-	return ok && b
-}
-
-// forceRefreshYouTube reports whether item data contains yt_refresh: true.
-func forceRefreshYouTube(data map[string]any) bool {
-	b, ok := data["yt_refresh"].(bool)
-	return ok && b
-}
-
 // enrichTree walks the LoadedItem tree and enriches each item in place.
-func enrichTree(items []LoadedItem, og *enricher.OGEnricher, yt *enricher.YouTubeEnricher, forceOG, forceYT bool) {
+func enrichTree(items []LoadedItem, r *enrich.Registry) {
 	for i := range items {
-		enrichItem(&items[i], og, yt, forceOG, forceYT)
-		enrichTree(items[i].Children, og, yt, forceOG, forceYT)
+		enrichItem(&items[i], r)
+		enrichTree(items[i].Children, r)
 	}
 }
 
-// enrichItem applies OG or YouTube enrichment to a single LoadedItem in place.
-func enrichItem(item *LoadedItem, og *enricher.OGEnricher, yt *enricher.YouTubeEnricher, forceOG, forceYT bool) {
-	enrichType, _ := item.Data["enrich"].(string)
-	switch enrichType {
-	case "opengraph":
-		if og == nil {
-			return
-		}
-		if url, _ := item.Data["url"].(string); url != "" {
-			force := forceOG || forceRefreshItem(item.Data)
-			if ogData, err := og.Enrich(url, force); err != nil {
-				log.Printf("warning: OG enrichment failed for %s: %v", url, err)
-			} else {
-				maps.Copy(item.Data, ogData)
-			}
-		}
-		delete(item.Data, "enrich")
-	case "youtube-channel":
-		if yt == nil {
-			return
-		}
-		if channelID, _ := item.Data["channelId"].(string); channelID != "" {
-			force := forceYT || forceRefreshYouTube(item.Data)
-			if ytData, err := yt.Enrich(channelID, force); err != nil {
-				log.Printf("warning: YouTube enrichment failed for %s: %v", channelID, err)
-			} else {
-				maps.Copy(item.Data, ytData)
-			}
-		}
-		delete(item.Data, "enrich")
+// enrichItem applies enrichment to a single LoadedItem in place.
+func enrichItem(item *LoadedItem, r *enrich.Registry) {
+	rawType, _ := item.Data["enrich"].(string)
+	enrichType := enrich.EnricherType(rawType)
+	if enrichType == "" {
+		return
+	}
+
+	key := enrichKeyForType(enrichType, item.Data)
+	if key == "" {
+		return
+	}
+
+	itemForce, _ := item.Data["enrich_refresh"].(bool)
+	data, err := r.Enrich(enrichType, key, itemForce)
+	if err != nil {
+		log.Printf("warning: %s enrichment failed for %q: %v", enrichType, key, err)
+	} else if data != nil {
+		maps.Copy(item.Data, data)
+	}
+	delete(item.Data, "enrich")
+	delete(item.Data, "enrich_refresh")
+}
+
+// enrichKeyForType returns the lookup key for the given enricher type from item data.
+func enrichKeyForType(enricherType enrich.EnricherType, data map[string]any) string {
+	switch enricherType {
+	case enrich.EnricherTypeOpenGraph:
+		v, _ := data["url"].(string)
+		return v
+	case enrich.EnricherTypeYouTubeChannel:
+		v, _ := data["channelId"].(string)
+		return v
+	default:
+		return ""
 	}
 }

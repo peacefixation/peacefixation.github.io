@@ -1,4 +1,4 @@
-package enricher
+package enrich
 
 import (
 	"encoding/json"

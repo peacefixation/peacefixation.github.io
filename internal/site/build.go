@@ -2,13 +2,12 @@ package site
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/peacefixation/ssg/internal/config"
 	"github.com/peacefixation/ssg/internal/datasource"
-	"github.com/peacefixation/ssg/internal/enricher"
+	"github.com/peacefixation/ssg/internal/enrich"
 	"github.com/peacefixation/ssg/internal/renderer"
 	"github.com/peacefixation/ssg/internal/theme"
 )
@@ -48,7 +47,7 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 		return 0, fmt.Errorf("initializing renderer: %w", err)
 	}
 
-	ogEnricher, ytEnricher, cleanup := initEnrichers(cfg)
+	enrichers, cleanup := initEnrichers(cfg)
 	defer cleanup()
 
 	// Phase 1: Scan — walk the content directory and build an ItemConfig tree.
@@ -64,7 +63,7 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 	}
 
 	// Phase 3: Enrich — OG and YouTube metadata, in place.
-	enrichTree(rootItems, ogEnricher, ytEnricher, cfg.RefreshOG, cfg.RefreshYouTube)
+	enrichTree(rootItems, enrichers)
 
 	// Tags are collected from the already-loaded tree — no re-fetching.
 	if cfg.Tags.Enabled {
@@ -122,43 +121,26 @@ func buildRootNav(items []LoadedItem) []map[string]any {
 	return nav
 }
 
-// initEnrichers creates and warms the OG and YouTube enrichers from cfg.
-// The returned cleanup func saves both caches and should be deferred by the caller.
-func initEnrichers(cfg *config.SiteConfig) (*enricher.OGEnricher, *enricher.YouTubeEnricher, func()) {
-	var og *enricher.OGEnricher
+// initEnrichers builds and warms the enricher registry from cfg.
+// The returned cleanup func saves all caches and should be deferred by the caller.
+func initEnrichers(cfg *config.SiteConfig) (*enrich.Registry, func()) {
+	r := enrich.NewRegistry()
+
 	if cfg.OGCacheFile != "" {
 		referer := cfg.CanonicalURL
 		if referer == "" {
 			referer = cfg.BaseURL
 		}
-		og = enricher.New(cfg.OGCacheFile, referer)
-		if err := og.LoadCache(); err != nil {
-			log.Printf("warning: loading OG cache: %v", err)
-		}
+		r.Register(enrich.EnricherTypeOpenGraph, enrich.New(cfg.OGCacheFile, referer), cfg.RefreshOG)
 	}
 
-	var yt *enricher.YouTubeEnricher
 	if cfg.YouTubeCacheFile != "" && cfg.YouTubeAPIKey != "" {
-		yt = enricher.NewYouTube(cfg.YouTubeCacheFile, cfg.YouTubeAPIKey)
-		if err := yt.LoadCache(); err != nil {
-			log.Printf("warning: loading YouTube cache: %v", err)
-		}
+		r.Register(enrich.EnricherTypeYouTubeChannel, enrich.NewYouTube(cfg.YouTubeCacheFile, cfg.YouTubeAPIKey), cfg.RefreshYouTube)
 	}
 
-	cleanup := func() {
-		if og != nil {
-			if err := og.SaveCache(); err != nil {
-				log.Printf("warning: saving OG cache: %v", err)
-			}
-		}
-		if yt != nil {
-			if err := yt.SaveCache(); err != nil {
-				log.Printf("warning: saving YouTube cache: %v", err)
-			}
-		}
-	}
+	r.LoadAll()
 
-	return og, yt, cleanup
+	return r, r.SaveAll
 }
 
 // loadTheme reads the theme config (if a theme is set) and returns the theme
