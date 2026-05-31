@@ -51,35 +51,35 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 	defer cleanup()
 
 	// Phase 1: Scan — walk the content directory and build an ItemConfig tree.
-	rootConfigs, err := scanDir(cfg.ContentDir, "", cfg, listMeta{})
+	scannedItems, err := scanDir(cfg.ContentDir, "", cfg, listMeta{})
 	if err != nil {
 		return 0, err
 	}
 
 	// Phase 2: Load — fetch data for every item; apply type defaults and sub-lists.
-	rootItems, err := loadTree(rootConfigs, registry, cfg.ItemsDir, cfg)
+	loadedItems, err := loadTree(scannedItems, registry, cfg.ItemsDir, cfg)
 	if err != nil {
 		return 0, err
 	}
 
 	// Phase 3: Enrich — OG and YouTube metadata, in place.
-	enrichTree(rootItems, enrichers)
+	enrichTree(loadedItems, enrichers)
 
 	// Tags are collected from the already-loaded tree — no re-fetching.
 	if cfg.Tags.Enabled {
-		tagMap := collectTags(rootItems, nil)
-		rootItems = append(rootItems, buildTagsItem(tagMap, cfg))
+		tagMap := collectTags(loadedItems, nil)
+		loadedItems = append(loadedItems, buildTagsItem(tagMap, cfg))
 	}
 
 	// Copy static assets (e.g. images for photo lists) to the output directory.
-	if err := copyAssetsFromTree(rootItems, cfg.OutputDir); err != nil {
+	if err := copyAssetsFromTree(loadedItems, cfg.OutputDir); err != nil {
 		return 0, fmt.Errorf("copying assets: %w", err)
 	}
 
-	rootNavItems := buildRootNav(rootItems)
+	rootNavItems := buildRootNav(loadedItems)
 	var siteMap []config.SiteMapNode
 	if cfg.SiteMap {
-		siteMap = buildSiteMap(rootItems, cfg.ItemsDir)
+		siteMap = buildSiteMap(loadedItems, cfg.ItemsDir)
 	}
 
 	// Phase 4: Assemble — pure; no IO, no renderer dependency.
@@ -89,7 +89,7 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 		SiteMap:      siteMap,
 		Cfg:          cfg,
 	}
-	pages := assembleTree(rootItems, ctx, nil)
+	pages := assembleTree(loadedItems, ctx, nil)
 
 	// Phase 5: Write — render card specs and page templates, write HTML files.
 	return writeTree(pages, ctx, r, cfg.OutputDir)
