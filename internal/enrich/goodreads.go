@@ -1,6 +1,7 @@
 package enrich
 
 import (
+	stdhtml "html"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -133,10 +134,10 @@ func parseGoodreadsPage(resp *http.Response) (GRCacheEntry, error) {
 			continue
 		}
 		return GRCacheEntry{
-			Title:       ld.Name,
-			Author:      extractAuthorName(ld.Author),
+			Title:       stdhtml.UnescapeString(ld.Name),
+			Author:      stdhtml.UnescapeString(extractAuthorName(ld.Author)),
 			Cover:       ld.Image,
-			Description: ld.Description,
+			Description: stdhtml.UnescapeString(ld.Description),
 			ISBN:        ld.ISBN,
 			Rating:      extractRatingValue(ld.AggregateRating.RatingValue),
 		}, nil
