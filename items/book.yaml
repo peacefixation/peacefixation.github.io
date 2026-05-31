@@ -11,6 +11,10 @@ fields:
     required: false
   - name: author
     required: false
+  - name: status
+    required: false
+  - name: my_rating
+    required: false
   - name: rating
     required: false
   - name: date_read
