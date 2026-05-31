@@ -4,6 +4,7 @@ import (
 	stdhtml "html"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -70,6 +71,7 @@ func (e *GREnricher) Enrich(url string, force bool) (map[string]any, error) {
 		}
 	}
 
+	log.Printf("enriching goodreads: %s", url)
 	entry, err := e.fetch(url)
 	if err != nil {
 		return nil, err

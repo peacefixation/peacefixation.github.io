@@ -142,6 +142,14 @@
     "isbn": "9780131365896",
     "rating": "3.60"
   },
+  "https://www.goodreads.com/book/show/12793962-we-the-drowned": {
+    "fetchedAt": "2026-05-31T02:53:00.934432945Z",
+    "title": "We, the Drowned",
+    "author": "Carsten Jensen",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1438026498i/12793962.jpg",
+    "isbn": "9780099512967",
+    "rating": "4.24"
+  },
   "https://www.goodreads.com/book/show/12975497": {
     "fetchedAt": "2026-05-31T01:56:02.817506062Z",
     "title": "Mawson and the Ice Men of the Heroic Age: Scott, Shackleton and Amundsen",
@@ -558,6 +566,14 @@
     "isbn": "9780241968215",
     "rating": "4.18"
   },
+  "https://www.goodreads.com/book/show/214043283-vector": {
+    "fetchedAt": "2026-05-31T02:52:57.752765556Z",
+    "title": "Vector: A Surprising Story of Space, Time, and Mathematical Transformation",
+    "author": "Robyn Arianrhod",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1717118000i/214043283.jpg",
+    "isbn": "9781761170089",
+    "rating": "4.05"
+  },
   "https://www.goodreads.com/book/show/214441": {
     "fetchedAt": "2026-05-31T01:52:03.649064558Z",
     "title": "Euclid's Elements",
@@ -565,6 +581,14 @@
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1386924722i/214441.jpg",
     "isbn": "9781888009194",
     "rating": "4.31"
+  },
+  "https://www.goodreads.com/book/show/214568484-the-light-eaters": {
+    "fetchedAt": "2026-05-31T02:52:50.46686557Z",
+    "title": "The Light Eaters",
+    "author": "Zoë Schlanger",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1718211093i/214568484.jpg",
+    "isbn": "9780008445348",
+    "rating": "4.25"
   },
   "https://www.goodreads.com/book/show/218392": {
     "fetchedAt": "2026-05-31T01:55:08.414216869Z",
@@ -636,6 +660,13 @@
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1441524454i/23266902.jpg",
     "isbn": "9781782394044",
     "rating": "4.40"
+  },
+  "https://www.goodreads.com/book/show/23463279-designing-data-intensive-applications": {
+    "fetchedAt": "2026-05-31T02:52:44.638750053Z",
+    "title": "Designing Data-Intensive Applications",
+    "author": "Martin Kleppmann",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1415816873i/23463279.jpg",
+    "rating": "4.69"
   },
   "https://www.goodreads.com/book/show/23692271": {
     "fetchedAt": "2026-05-31T01:59:21.708553823Z",
@@ -1094,6 +1125,14 @@
     "isbn": "9780141185064",
     "rating": "4.03"
   },
+  "https://www.goodreads.com/book/show/44072106-finding-chika": {
+    "fetchedAt": "2026-05-31T02:52:53.810167678Z",
+    "title": "Finding Chika: A Little Girl, an Earthquake, and the Making of a Family",
+    "author": "Mitch Albom",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1572900688i/44072106.jpg",
+    "isbn": "9780062952417",
+    "rating": "4.47"
+  },
   "https://www.goodreads.com/book/show/44326277": {
     "fetchedAt": "2026-05-31T01:59:25.273724463Z",
     "title": "Third Thoughts: The Universe We Still Don’t Know",
@@ -1141,6 +1180,14 @@
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1393787123i/477900.jpg",
     "rating": "3.93"
   },
+  "https://www.goodreads.com/book/show/48610096-flight-to-arras": {
+    "fetchedAt": "2026-05-31T02:52:41.187556404Z",
+    "title": "Flight to Arras",
+    "author": "Antoine de Saint-Exupéry",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1572247424i/48610096.jpg",
+    "isbn": "9781773236162",
+    "rating": "3.89"
+  },
   "https://www.goodreads.com/book/show/4901": {
     "fetchedAt": "2026-05-31T01:51:40.055704958Z",
     "title": "Heart of Darkness",
@@ -1171,6 +1218,14 @@
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1525279642i/49254.jpg",
     "isbn": "9780671671563",
     "rating": "4.16"
+  },
+  "https://www.goodreads.com/book/show/51111629-figuring": {
+    "fetchedAt": "2026-05-31T03:02:56.426314225Z",
+    "title": "Figuring",
+    "author": "Maria Popova",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1581289722i/51111629.jpg",
+    "isbn": "9781786897268",
+    "rating": "4.35"
   },
   "https://www.goodreads.com/book/show/52036": {
     "fetchedAt": "2026-05-31T01:49:08.56300458Z",
@@ -1257,6 +1312,13 @@
     "isbn": "9780702234088",
     "rating": "3.72"
   },
+  "https://www.goodreads.com/book/show/567189.Language_in_Thought_and_Action": {
+    "fetchedAt": "2026-05-31T02:53:08.418476784Z",
+    "title": "Language in Thought and Action",
+    "author": "S.I. Hayakawa",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1347723119i/567189.jpg",
+    "rating": "4.22"
+  },
   "https://www.goodreads.com/book/show/56852": {
     "fetchedAt": "2026-05-31T01:49:51.956129654Z",
     "title": "The Code Book: The Secret History of Codes and Code-Breaking",
@@ -1264,6 +1326,14 @@
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1170460285i/56852.jpg",
     "isbn": "9781857028898",
     "rating": "4.30"
+  },
+  "https://www.goodreads.com/book/show/57055860-out-of-thin-air": {
+    "fetchedAt": "2026-05-31T02:53:04.932427459Z",
+    "title": "Out of Thin Air: Running Wisdom and Magic from Above the Clouds in Ethiopia",
+    "author": "Michael  Crawley",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1637605356i/57055860.jpg",
+    "isbn": "9781472975294",
+    "rating": "4.20"
   },
   "https://www.goodreads.com/book/show/571406": {
     "fetchedAt": "2026-05-31T02:00:15.264474855Z",
@@ -1507,6 +1577,14 @@
     "isbn": "9780312240509",
     "rating": "4.11"
   },
+  "https://www.goodreads.com/book/show/7090.The_Soul_of_a_New_Machine": {
+    "fetchedAt": "2026-05-31T02:52:36.21024516Z",
+    "title": "The Soul of a New Machine",
+    "author": "Tracy Kidder",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1627012239i/7090.jpg",
+    "isbn": "9780316491976",
+    "rating": "4.12"
+  },
   "https://www.goodreads.com/book/show/714583": {
     "fetchedAt": "2026-05-31T01:52:56.420422767Z",
     "title": "The Man Who Loved Only Numbers: The Story of  Paul Erdős and the Search for Mathematical Truth",
@@ -1639,6 +1717,14 @@
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1348027904i/85009.jpg",
     "isbn": "9780201633610",
     "rating": "4.20"
+  },
+  "https://www.goodreads.com/book/show/863474.Manufacturing_Consent": {
+    "fetchedAt": "2026-05-31T02:52:47.597084259Z",
+    "title": "Manufacturing Consent: The Political Economy of the Mass Media",
+    "author": "Edward S. Herman",
+    "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1329586357i/863474.jpg",
+    "isbn": "9780099533115",
+    "rating": "4.23"
   },
   "https://www.goodreads.com/book/show/865": {
     "fetchedAt": "2026-05-31T01:49:05.190624842Z",

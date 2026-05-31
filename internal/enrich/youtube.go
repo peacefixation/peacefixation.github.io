@@ -101,6 +101,7 @@ func (e *YouTubeEnricher) Enrich(channelID string, force bool) (map[string]any, 
 		}
 	}
 
+	log.Printf("enriching youtube-channel: %s", channelID)
 	entry, err := e.fetch(channelID)
 	if err != nil {
 		return nil, err

@@ -3,6 +3,7 @@ package enrich
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -71,6 +72,7 @@ func (e *OGEnricher) Enrich(url string, force bool) (map[string]any, error) {
 		}
 	}
 
+	log.Printf("enriching opengraph: %s", url)
 	entry, err := e.fetch(url)
 	if err != nil {
 		return nil, err
