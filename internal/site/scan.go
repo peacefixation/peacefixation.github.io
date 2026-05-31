@@ -2,7 +2,6 @@ package site
 
 import (
 	"fmt"
-	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,18 +27,14 @@ type listMeta struct {
 	Limit        int    `yaml:"limit"`
 }
 
-// imageExts is the set of file extensions treated as images in a photos list.
-var imageExts = map[string]bool{
-	".jpg": true, ".jpeg": true, ".png": true,
-	".gif": true, ".webp": true, ".avif": true,
-}
-
 // scanDir recursively walks dir and returns an ItemConfig for every discovered item.
-// If the parent list has type "photos", scanPhotoDir is used instead of the
-// normal content scan.
+// If the parent list's type is registered in listPlugins as a ChildScanner, that
+// scanner is used instead of the normal content scan.
 func scanDir(dir, outputPrefix string, cfg *config.SiteConfig, parent listMeta) ([]config.ItemConfig, error) {
-	if parent.Type == "photos" {
-		return scanPhotoDir(dir, outputPrefix, cfg, parent)
+	if p, ok := listPlugins[parent.Type]; ok {
+		if scanner, ok := p.(ChildScanner); ok {
+			return scanner.ScanChildren(dir, outputPrefix, cfg, parent)
+		}
 	}
 	return scanContentDir(dir, outputPrefix, cfg, parent)
 }
@@ -73,52 +68,6 @@ func scanContentDir(dir, outputPrefix string, cfg *config.SiteConfig, parent lis
 				items = append(items, item)
 			}
 		}
-	}
-	return items, nil
-}
-
-// scanPhotoDir scans a photos directory for image files and returns a
-// synthesised ItemConfig for each one. Sidecar YAML files (same stem, .yaml
-// extension) are merged into the item data when present. Regular content files
-// are ignored so sidecar files do not appear as standalone items.
-func scanPhotoDir(dir, outputPrefix string, cfg *config.SiteConfig, parent listMeta) ([]config.ItemConfig, error) {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil
-		}
-		return nil, fmt.Errorf("reading directory %q: %w", dir, err)
-	}
-
-	var items []config.ItemConfig
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
-		}
-		ext := strings.ToLower(filepath.Ext(entry.Name()))
-		if !imageExts[ext] {
-			continue
-		}
-		stem := strings.TrimSuffix(entry.Name(), filepath.Ext(entry.Name()))
-		data := map[string]any{
-			"type":     "photo",
-			"title":    stem,
-			"filename": entry.Name(),
-			"src":      "/" + outputPrefix + entry.Name(),
-		}
-		if sidecar := readSidecar(filepath.Join(dir, stem+".yaml")); sidecar != nil {
-			maps.Copy(data, sidecar)
-		}
-		items = append(items, config.ItemConfig{
-			Name:         stem,
-			Template:     cfg.Defaults.Page.Template,
-			CardTemplate: parent.CardTemplate,
-			OutputPath:   outputPrefix + stem + "/index.html",
-			DataSource: config.DataSourceConfig{
-				Type: config.MapType,
-				Data: data,
-			},
-		})
 	}
 	return items, nil
 }

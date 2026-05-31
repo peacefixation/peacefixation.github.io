@@ -71,9 +71,9 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 		rootItems = append(rootItems, buildTagsItem(tagMap, cfg))
 	}
 
-	// Copy photo assets to the output directory before rendering.
-	if err := copyPhotosFromTree(rootItems, cfg.OutputDir); err != nil {
-		return 0, fmt.Errorf("copying photo assets: %w", err)
+	// Copy static assets (e.g. images for photo lists) to the output directory.
+	if err := copyAssetsFromTree(rootItems, cfg.OutputDir); err != nil {
+		return 0, fmt.Errorf("copying assets: %w", err)
 	}
 
 	rootNavItems := buildRootNav(rootItems)
@@ -157,18 +157,20 @@ func loadTheme(cfg *config.SiteConfig) (theme.Data, string, error) {
 	return theme.BuildData(themeCfg), theme.TemplateDir(themeDir), nil
 }
 
-// copyPhotosFromTree walks the LoadedItem tree and copies image files to the
-// output directory for any list with ListType "photos".
-func copyPhotosFromTree(items []LoadedItem, outputDir string) error {
+// copyAssetsFromTree walks the LoadedItem tree and calls CopyAssets on any list
+// whose type is registered as an AssetCopier plugin.
+func copyAssetsFromTree(items []LoadedItem, outputDir string) error {
 	for _, item := range items {
-		if item.Config.ListType == "photos" {
-			srcDir := filepath.Dir(item.Config.DataSource.Path)
-			destDir := filepath.Join(outputDir, filepath.Dir(item.Config.OutputPath))
-			if err := copyImages(srcDir, destDir); err != nil {
-				return fmt.Errorf("copying photos for %q: %w", item.Config.Name, err)
+		if p, ok := listPlugins[item.Config.ListType]; ok {
+			if copier, ok := p.(AssetCopier); ok {
+				srcDir := filepath.Dir(item.Config.DataSource.Path)
+				destDir := filepath.Join(outputDir, filepath.Dir(item.Config.OutputPath))
+				if err := copier.CopyAssets(srcDir, destDir); err != nil {
+					return fmt.Errorf("copying assets for %q: %w", item.Config.Name, err)
+				}
 			}
 		}
-		if err := copyPhotosFromTree(item.Children, outputDir); err != nil {
+		if err := copyAssetsFromTree(item.Children, outputDir); err != nil {
 			return err
 		}
 	}

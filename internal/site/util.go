@@ -54,9 +54,9 @@ func copyStaticDir(src, outputDir string) error {
 	})
 }
 
-// copyImages copies all image files from src into dest, preserving filenames.
-// Skips silently if src does not exist.
-func copyImages(src, dest string) error {
+// copyFiles copies all files whose extension is in exts from src into dest,
+// preserving filenames. Skips silently if src does not exist.
+func copyFiles(src, dest string, exts map[string]bool) error {
 	entries, err := os.ReadDir(src)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -69,7 +69,7 @@ func copyImages(src, dest string) error {
 			continue
 		}
 		ext := strings.ToLower(filepath.Ext(entry.Name()))
-		if !imageExts[ext] {
+		if !exts[ext] {
 			continue
 		}
 		if err := copyFile(filepath.Join(src, entry.Name()), filepath.Join(dest, entry.Name())); err != nil {
