@@ -4,9 +4,22 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      refresh_goodreads:
+        description: Re-fetch all Goodreads book metadata
+        type: boolean
+        default: false
+      refresh_og:
+        description: Re-fetch all OpenGraph metadata
+        type: boolean
+        default: false
+      refresh_youtube:
+        description: Re-fetch YouTube channel metadata
+        type: boolean
+        default: false
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -24,19 +37,27 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Restore OG cache
-        uses: actions/cache@v5
-        with:
-          path: cache/
-          key: enrichment-cache
-
       - name: Build SSG
         run: go build -o ssg .
 
       - name: Build site
-        run: mkdir -p cache && ./ssg build
+        run: |
+          FLAGS=""
+          ${{ inputs.refresh_goodreads == 'true' && 'FLAGS="$FLAGS --refresh-goodreads"' || 'true' }}
+          ${{ inputs.refresh_og == 'true' && 'FLAGS="$FLAGS --refresh-og"' || 'true' }}
+          ${{ inputs.refresh_youtube == 'true' && 'FLAGS="$FLAGS --refresh-yt"' || 'true' }}
+          mkdir -p cache && ./ssg build $FLAGS
         env:
           YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
+
+      - name: Commit refreshed caches
+        if: inputs.refresh_goodreads == 'true' || inputs.refresh_og == 'true' || inputs.refresh_youtube == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cache/
+          git diff --cached --quiet || git commit -m "chore: refresh enrichment caches [skip ci]"
+          git push
 
       - uses: actions/upload-pages-artifact@v5
         with:

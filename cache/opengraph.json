@@ -1,0 +1,116 @@
+{
+  "https://allpossibleworlds.bandcamp.com/": {
+    "fetchedAt": "2026-05-30T22:46:38.772858203Z",
+    "title": "all possible worlds",
+    "description": "for those who don't know",
+    "image": "https://f4.bcbits.com/img/0040812447_23.jpg",
+    "siteName": "all possible worlds"
+  },
+  "https://boringsql.com/posts/good-cte-bad-cte/": {
+    "fetchedAt": "2026-05-30T22:46:41.879699052Z",
+    "title": "Good CTE, bad CTE",
+    "description": "The planner treats CTEs very differently depending on how you write them. Here's what happens under the hood, version by version, through PostgreSQL 18.",
+    "image": "https://boringsql.com/og-images/good-cte-bad-cte-og.jpg",
+    "siteName": "boringSQL | Supercharge your SQL \u0026 PostgreSQL powers"
+  },
+  "https://davidoks.blog/p/why-japanese-companies-do-so-many": {
+    "fetchedAt": "2026-05-30T22:46:30.313091997Z",
+    "title": "Why Japanese companies do so many different things",
+    "description": "The internal logic of the world’s strangest corporations",
+    "image": "https://substackcdn.com/image/fetch/$s_!q5kh!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fff42a7b2-6c27-4773-a0b0-561081c55da1_1605x2000.jpeg"
+  },
+  "https://firstfloor.substack.com/p/traumprinz-life": {
+    "fetchedAt": "2026-05-30T22:46:36.41053983Z",
+    "title": "Traumprinz – Life",
+    "description": "All Possible Worlds",
+    "image": "https://substackcdn.com/image/fetch/$s_!057m!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F103d876e-f2c2-4235-9705-559fa7e6a6a3_1456x1048.jpeg"
+  },
+  "https://fsol.bandcamp.com/": {
+    "fetchedAt": "2026-05-30T22:46:33.220474827Z",
+    "title": "THE FUTURE SOUND OF LONDON",
+    "image": "https://f4.bcbits.com/img/0021563802_23.jpg",
+    "siteName": "THE FUTURE SOUND OF LONDON"
+  },
+  "https://jvns.ca/": {
+    "fetchedAt": "2026-05-30T22:46:29.745733128Z",
+    "title": "Julia Evans",
+    "description": "Julia Evans",
+    "siteName": "Julia Evans"
+  },
+  "https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/": {
+    "fetchedAt": "2026-05-30T22:46:42.255733315Z"
+  },
+  "https://materializedview.io": {
+    "fetchedAt": "2026-05-30T22:46:39.747113209Z",
+    "title": "Materialized View | Chris | Substack",
+    "description": "Software infrastructure hot takes, projects, papers, developer interviews, and deep dives. Brought to you by Chris Riccomini. Click to read Materialized View, by Chris, a Substack publication with thousands of subscribers.",
+    "image": "https://substackcdn.com/image/fetch/$s_!DZcu!,f_auto,q_auto:best,fl_progressive:steep/https%3A%2F%2Fmaterializedview.substack.com%2Ftwitter%2Fsubscribe-card.jpg%3Fv%3D935158386%26version%3D9"
+  },
+  "https://mmapped.blog/posts/48-the-third-hard-problem": {
+    "fetchedAt": "2026-05-30T22:46:41.998431722Z",
+    "description": "It’s not off-by-one errors."
+  },
+  "https://nolanlawson.com/": {
+    "fetchedAt": "2026-05-30T22:46:30.085664514Z",
+    "title": "Read the Tea Leaves",
+    "description": "Software and other dark arts, by Nolan Lawson",
+    "image": "https://nolanlawson.com/wp-content/uploads/2025/01/favicon.png?w=32",
+    "siteName": "Read the Tea Leaves"
+  },
+  "https://oliverlieb.bandcamp.com/": {
+    "fetchedAt": "2026-05-30T22:46:34.56244316Z",
+    "title": "Oliver Lieb",
+    "description": "Frankfurt based DJ \u0026 producer Oliver Lieb is involved in the production of electronic music since 1988.  With more than 300 singles and albums including remixes for Faithless, Moby, Snap, Yello, Human League, Mory Kante, Utah Saints to name a few,  he made it in the premier leage of international producers and keeps surprising and amazing people with his extraordinary sounds and diversity.",
+    "image": "https://f4.bcbits.com/img/0039193426_23.jpg",
+    "siteName": "Oliver Lieb"
+  },
+  "https://soundcloud.com/irini108": {
+    "fetchedAt": "2026-05-30T22:46:37.76017406Z",
+    "title": "irini",
+    "description": "Listen to irini | SoundCloud is an audio platform that lets you listen to what you love and share the sounds you create.",
+    "image": "https://i1.sndcdn.com/avatars-7p1llHtM5PUAk9LE-cLIPTw-t500x500.jpg",
+    "siteName": "SoundCloud"
+  },
+  "https://soundcloud.com/oliver-lieb": {
+    "fetchedAt": "2026-05-30T22:46:36.303177854Z",
+    "title": "Oliver Lieb",
+    "description": "Latest Releases:\nOliver Lieb - Atomo on Respekt Recordings\nBeatport: www.beatport.com/release/atomo/2865185\nApple Music: music.apple.com/de/album/atomo-single/1499842994\nSpotify: open.spotify.com/albu",
+    "image": "https://i1.sndcdn.com/avatars-iy7EAIR40BxXbmVn-0RhnfQ-t500x500.jpg",
+    "siteName": "SoundCloud"
+  },
+  "https://soundcloud.com/planet-uterus": {
+    "fetchedAt": "2026-05-30T22:46:37.115705009Z",
+    "title": "planet uterus",
+    "description": "founded 1989. offering a healing place for all dancers, dreamers, lovers and disbelievers. ",
+    "image": "https://i1.sndcdn.com/avatars-000099660028-pai2ar-t500x500.jpg",
+    "siteName": "SoundCloud"
+  },
+  "https://thenumb.at/Functions-are-Vectors/": {
+    "fetchedAt": "2026-05-30T22:46:44.324158358Z"
+  },
+  "https://www.albumoftheyear.org/": {
+    "fetchedAt": "2026-05-30T22:46:30.767014584Z",
+    "title": "Album of The Year - Music Reviews, Ratings, Charts, News",
+    "description": "Discover the best albums of 2026. Read critic and user reviews, explore ratings, charts, and year-end lists across every genre."
+  },
+  "https://www.fsoldigital.com/": {
+    "fetchedAt": "2026-05-30T22:46:34.006864113Z",
+    "title": "FSOLdigital - The digital home of FSOL",
+    "description": "FSOLdigital - The digital home of The Future Sound Of London",
+    "siteName": "FSOLdigital"
+  },
+  "https://www.quantamagazine.org/": {
+    "fetchedAt": "2026-05-30T22:46:46.967356209Z",
+    "title": "Science and Math News | Quanta Magazine",
+    "description": "Illuminating mathematics, physics, biology and computer science research through public service journalism.",
+    "image": "https://www.quantamagazine.org/wp-content/uploads/2024/11/Quanta-Logo-default-Social.jpg",
+    "siteName": "Quanta Magazine"
+  },
+  "https://www.youtube.com/@3blue1brown": {
+    "fetchedAt": "2026-05-30T22:46:43.963875786Z",
+    "title": "3Blue1Brown",
+    "description": "My name is Grant Sanderson. Videos here cover a variety of topics in math, or adjacent fields like physics and CS, all with an emphasis on visualizing the core ideas. The goal is to use animation to help elucidate and motivate otherwise tricky topics, and for difficult problems to be made simple with changes in perspective.\n\nFor more information, other projects, FAQs, and inquiries see the website: https://www.3blue1brown.com",
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_nFzZFPLxPZRHcE3SSwzdrbuWqfoWYwLAu0_2iO6blQYAU=s900-c-k-c0x00ffffff-no-rj",
+    "siteName": "YouTube"
+  }
+}
