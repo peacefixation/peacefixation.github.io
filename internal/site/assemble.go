@@ -83,6 +83,9 @@ func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]a
 	if item.Config.SortBy != "" {
 		sortEntries(entries, item.Config.SortBy, item.Config.SortOrder)
 	}
+	if item.Config.PinnedField != "" {
+		entries = pinEntries(entries, item.Config.PinnedField, item.Config.PinnedValue)
+	}
 	if item.Config.Limit > 0 && len(entries) > item.Config.Limit {
 		entries = entries[:item.Config.Limit]
 	}
@@ -122,6 +125,20 @@ func buildCardSpecs(parent config.ItemConfig, entries []cardEntry) []CardSpec {
 		specs = append(specs, CardSpec{Template: cardTemplate, Data: e.data})
 	}
 	return specs
+}
+
+// pinEntries moves entries where data[field] == value to the front, preserving relative order within each group.
+func pinEntries(entries []cardEntry, field, value string) []cardEntry {
+	var pinned []cardEntry
+	var rest []cardEntry
+	for _, e := range entries {
+		if s, _ := e.data[field].(string); s == value {
+			pinned = append(pinned, e)
+		} else {
+			rest = append(rest, e)
+		}
+	}
+	return append(pinned, rest...)
 }
 
 // sortEntries sorts entries in-place by the given field.

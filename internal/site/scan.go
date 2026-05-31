@@ -25,6 +25,8 @@ type listMeta struct {
 	SortBy       string `yaml:"sortBy"`
 	SortOrder    string `yaml:"sortOrder"`
 	Limit        int    `yaml:"limit"`
+	PinnedField  string `yaml:"pinnedField"`
+	PinnedValue  string `yaml:"pinnedValue"`
 }
 
 // scanDir recursively walks dir and returns an ItemConfig for every discovered item.
@@ -120,6 +122,8 @@ func scanDirItem(parentDir, name, outputPrefix string, cfg *config.SiteConfig, p
 		SortBy:       sortBy,
 		SortOrder:    sortOrder,
 		Limit:        limit,
+		PinnedField:  meta.PinnedField,
+		PinnedValue:  meta.PinnedValue,
 		ListType:     meta.Type,
 	}, true, nil
 }
