@@ -59,18 +59,18 @@ func loadTree(items []config.ItemConfig, registry *datasource.Registry, itemsDir
 			}
 		}
 
-		// Expand sub-lists declared in item data (file items with sibling list dirs).
-		allChildren := itemCfg.Children
+		// Add any sub-lists named in the item's "lists" field as additional children.
+		childConfigs := itemCfg.Children
 		if rawLists, ok := data["lists"].([]any); ok {
-			extra, err := scanSubLists(rawLists, itemCfg, cfg)
+			subListConfigs, err := scanSubLists(rawLists, itemCfg, cfg)
 			if err != nil {
 				return nil, err
 			}
-			allChildren = append(allChildren, extra...)
+			childConfigs = append(childConfigs, subListConfigs...)
 			delete(data, "lists")
 		}
 
-		children, err := loadTree(allChildren, registry, itemsDir, cfg)
+		children, err := loadTree(childConfigs, registry, itemsDir, cfg)
 		if err != nil {
 			return nil, err
 		}
