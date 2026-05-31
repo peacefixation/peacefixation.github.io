@@ -6,8 +6,11 @@
   <div class="book-body">
     <p class="book-title"><a class="item-link" href="{{.url}}" target="_blank" rel="noopener noreferrer">{{$title}}</a></p>
     {{if $author}}<p class="book-author">{{$author}}</p>{{end}}
-    {{if .gr_rating}}<p class="book-rating">★ {{.gr_rating}}</p>{{end}}
-    {{if .date_read}}<p class="book-date">Read: {{.date_read}}</p>{{end}}
+    {{if .gr_rating}}<p class="book-gr-rating"><span class="star">★</span> {{.gr_rating}}</p>{{end}}
+  </div>
+  <div class="book-meta">
+    {{if .date_read}}<p class="book-date">{{.date_read}}</p>{{end}}
+    {{if .my_rating}}<p class="book-my-rating"><span class="star">★</span> {{.my_rating}}</p>{{end}}
   </div>
   {{template "tag-links.html" .}}
 </div>

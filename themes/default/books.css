@@ -35,12 +35,38 @@
   font-weight: 600;
 }
 
-.book-author,
-.book-rating,
+.book-author {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.book-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  align-items: flex-end;
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.book-gr-rating,
+.book-my-rating {
+  margin: 0;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
 .book-date {
   margin: 0;
   font-size: 0.875rem;
   color: var(--muted);
+  white-space: nowrap;
+}
+
+.star {
+  color: #fcba03;
 }
 
 /* === Book page === */
