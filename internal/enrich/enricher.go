@@ -8,6 +8,7 @@ type EnricherType string
 const (
 	EnricherTypeOpenGraph      EnricherType = "opengraph"
 	EnricherTypeYouTubeChannel EnricherType = "youtube-channel"
+	EnricherTypeGoodreads      EnricherType = "goodreads"
 )
 
 // Enricher fetches external metadata for a single key and caches it.

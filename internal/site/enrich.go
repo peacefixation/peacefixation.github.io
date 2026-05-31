@@ -80,6 +80,9 @@ func enrichKeyForType(enricherType enrich.EnricherType, data map[string]any) str
 	case enrich.EnricherTypeYouTubeChannel:
 		v, _ := data["channelId"].(string)
 		return v
+	case enrich.EnricherTypeGoodreads:
+		v, _ := data["url"].(string)
+		return v
 	default:
 		return ""
 	}

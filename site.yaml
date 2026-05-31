@@ -14,6 +14,8 @@ server:
 
 sitemap: true
 
+goodreadsCacheFile: cache/goodreads.json
+
 staticJS:
   - js/embed-collapsible.js
   - js/slideshow.js

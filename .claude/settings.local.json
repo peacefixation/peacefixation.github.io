@@ -16,7 +16,8 @@
       "Bash(git diff:*)",
       "Bash(git status:*)",
       "Bash(git show:*)",
-      "Bash(mkdir -p /home/matt/src/ssg/plans/07)"
+      "Bash(mkdir -p /home/matt/src/ssg/plans/07)",
+      "Bash(python3 -c ' *)"
     ],
     "deny": [
       "Bash(curl:*)",

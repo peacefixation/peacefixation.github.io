@@ -1,0 +1,17 @@
+name: Book
+defaults:
+  template: book-page.html
+  cardTemplate: book-card.html
+  enrich: goodreads
+  icon: book
+fields:
+  - name: url
+    required: true
+  - name: title
+    required: false
+  - name: author
+    required: false
+  - name: rating
+    required: false
+  - name: date_read
+    required: false

@@ -138,6 +138,10 @@ func initEnrichers(cfg *config.SiteConfig) (*enrich.Registry, func()) {
 		r.Register(enrich.EnricherTypeYouTubeChannel, enrich.NewYouTube(cfg.YouTubeCacheFile, cfg.YouTubeAPIKey), cfg.RefreshYouTube)
 	}
 
+	if cfg.GoodreadsCacheFile != "" {
+		r.Register(enrich.EnricherTypeGoodreads, enrich.NewGoodreads(cfg.GoodreadsCacheFile), cfg.RefreshGoodreads)
+	}
+
 	r.LoadAll()
 
 	return r, r.SaveAll

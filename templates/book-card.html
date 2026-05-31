@@ -1,0 +1,14 @@
+{{define "book-card.html"}}
+{{$title := or .gr_title .title}}
+{{$author := or .gr_author .author}}
+<div class="item book-card">
+  {{if .gr_cover}}<div class="book-cover-wrap"><img class="book-cover" src="{{.gr_cover}}" alt="{{$title}}"></div>{{end}}
+  <div class="book-body">
+    <p class="book-title"><a class="item-link" href="{{.url}}" target="_blank" rel="noopener noreferrer">{{$title}}</a></p>
+    {{if $author}}<p class="book-author">{{$author}}</p>{{end}}
+    {{if .gr_rating}}<p class="book-rating">★ {{.gr_rating}}</p>{{end}}
+    {{if .date_read}}<p class="book-date">Read: {{.date_read}}</p>{{end}}
+  </div>
+  {{template "tag-links.html" .}}
+</div>
+{{end}}

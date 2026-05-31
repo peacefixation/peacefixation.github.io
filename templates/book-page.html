@@ -1,0 +1,19 @@
+{{define "book-page.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>{{template "head.html" .}}</head>
+<body>
+  {{template "nav.html" .}}
+  <div class="book-page">
+    {{if .gr_cover}}<img class="book-page-cover" src="{{.gr_cover}}" alt="{{or .gr_title .title}}">{{end}}
+    <h1>{{or .gr_title .title}}</h1>
+    {{if or .gr_author .author}}<p class="book-page-author">{{or .gr_author .author}}</p>{{end}}
+    {{if .gr_rating}}<p class="book-page-rating">★ {{.gr_rating}}</p>{{end}}
+    {{if .date_read}}<p class="book-page-date">Read: {{.date_read}}</p>{{end}}
+    {{if .gr_description}}<p class="book-page-description">{{.gr_description}}</p>{{end}}
+    {{if .url}}<p><a class="item-link" href="{{.url}}" target="_blank" rel="noopener noreferrer">View on Goodreads</a></p>{{end}}
+  </div>
+  {{template "foot.html" .}}
+</body>
+</html>
+{{end}}

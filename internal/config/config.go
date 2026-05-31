@@ -25,9 +25,11 @@ type SiteConfig struct {
 	SiteMap          bool         `mapstructure:"sitemap"`
 	OGCacheFile      string       `mapstructure:"ogCacheFile"`
 	RefreshOG        bool         `mapstructure:"-"`
-	YouTubeCacheFile string       `mapstructure:"youtubeCacheFile"`
-	RefreshYouTube   bool         `mapstructure:"-"`
-	YouTubeAPIKey    string       `mapstructure:"-"`
+	YouTubeCacheFile  string       `mapstructure:"youtubeCacheFile"`
+	RefreshYouTube    bool         `mapstructure:"-"`
+	YouTubeAPIKey     string       `mapstructure:"-"`
+	GoodreadsCacheFile string      `mapstructure:"goodreadsCacheFile"`
+	RefreshGoodreads  bool         `mapstructure:"-"`
 	Tags             TagsConfig   `mapstructure:"tags"`
 }
 
@@ -133,6 +135,7 @@ func Load(path string) (*SiteConfig, error) {
 	viper.SetDefault("server.port", 8080)
 	viper.SetDefault("ogCacheFile", "cache/opengraph.json")
 	viper.SetDefault("youtubeCacheFile", "cache/youtube-channel.json")
+	viper.SetDefault("goodreadsCacheFile", "cache/goodreads.json")
 
 	var cfg SiteConfig
 	if err := viper.Unmarshal(&cfg); err != nil {
