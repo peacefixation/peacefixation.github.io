@@ -3,3 +3,5 @@ types:
   - book
 sortBy: date_read
 sortOrder: desc
+pinnedField: status
+pinnedValue: reading
