@@ -72,7 +72,7 @@ func writePage(page Page, ctx AssemblyContext, r *renderer.Renderer, outputDir s
 	}
 	defer f.Close()
 
-	return r.RenderItem(f, page.Config.Template, renderData)
+	return r.Render(f, page.Config.Template, renderData)
 }
 
 // renderCardSpecs resolves a slice of CardSpecs into rendered HTML fragments.
@@ -90,7 +90,7 @@ func renderCardSpecs(r *renderer.Renderer, specs []CardSpec) ([]template.HTML, e
 			}
 			data["List"] = resolved
 		}
-		html, err := r.RenderCard(spec.Template, data)
+		html, err := r.RenderFragment(spec.Template, data)
 		if err != nil {
 			return nil, fmt.Errorf("rendering card with template %q: %w", spec.Template, err)
 		}

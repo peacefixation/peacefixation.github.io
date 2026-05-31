@@ -99,21 +99,20 @@ func parseDir(tmpl *template.Template, dir string) error {
 	})
 }
 
-// RenderItem executes the named template with data, writing output to w.
-func (r *Renderer) RenderItem(w io.Writer, templateName string, data map[string]any) error {
+// Render executes the named template with data, writing output to w.
+func (r *Renderer) Render(w io.Writer, templateName string, data map[string]any) error {
 	if err := r.tmpl.ExecuteTemplate(w, templateName, data); err != nil {
-		return fmt.Errorf("rendering item with template %q: %w", templateName, err)
+		return fmt.Errorf("rendering template %q: %w", templateName, err)
 	}
 	return nil
 }
 
-// RenderCard renders a single item through templateName and returns a safe HTML
-// fragment. The caller collects fragments and injects them into the parent
-// item's data under the key "List" before rendering the parent template.
-func (r *Renderer) RenderCard(templateName string, data map[string]any) (template.HTML, error) {
+// RenderFragment executes the named template with data and returns the output
+// as a safe HTML fragment.
+func (r *Renderer) RenderFragment(templateName string, data map[string]any) (template.HTML, error) {
 	var buf strings.Builder
 	if err := r.tmpl.ExecuteTemplate(&buf, templateName, data); err != nil {
-		return "", fmt.Errorf("rendering card with template %q: %w", templateName, err)
+		return "", fmt.Errorf("rendering template %q: %w", templateName, err)
 	}
 	return template.HTML(buf.String()), nil //nolint:gosec // rendered by our own templates
 }
