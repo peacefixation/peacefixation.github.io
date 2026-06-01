@@ -3,8 +3,8 @@ date_read: '2013-07-08'
 my_rating: 4
 status: read
 tags:
-- computing
-- math
+  - math
+  - computing
 title: Computers, Pattern, Chaos, and Beauty
 type: book
 url: https://www.goodreads.com/book/show/240286

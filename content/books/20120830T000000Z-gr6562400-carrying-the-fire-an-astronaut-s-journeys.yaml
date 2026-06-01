@@ -3,7 +3,8 @@ date_read: '2012-08-30'
 my_rating: 5
 status: read
 tags:
-- favorites
+  - autobiography
+  - spaceflight
 title: 'Carrying the Fire: An Astronaut''s Journeys'
 type: book
 url: https://www.goodreads.com/book/show/6562400

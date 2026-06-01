@@ -3,7 +3,8 @@ date_read: '2003-03-24'
 my_rating: 5
 status: read
 tags:
-- favorites
+  - satire
+  - world war 2
 title: Catch-22
 type: book
 url: https://www.goodreads.com/book/show/168668

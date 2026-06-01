@@ -3,7 +3,8 @@ date_read: '2013-05-21'
 my_rating: 5
 status: read
 tags:
-- favorites
+  - classic
+  - fiction
 title: The Grapes of Wrath
 type: book
 url: https://www.goodreads.com/book/show/4400
