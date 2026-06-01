@@ -3,7 +3,8 @@ date_read: '2014-06-05'
 my_rating: 5
 status: read
 tags:
-- favorites
+  - fiction
+  - surrealism
 title: Foam of the Daze
 type: book
 url: https://www.goodreads.com/book/show/141822

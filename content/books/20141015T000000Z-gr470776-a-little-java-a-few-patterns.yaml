@@ -1,6 +1,9 @@
 author: Matthias Felleisen
 my_rating: 3
 status: read
+tags:
+  - programming
+  - java
 title: A Little Java, A Few Patterns
 type: book
 url: https://www.goodreads.com/book/show/470776

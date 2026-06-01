@@ -3,7 +3,8 @@ date_read: '2013-10-24'
 my_rating: 4
 status: read
 tags:
-- computing
+  - computing
+  - programming
 title: 'Clean Code: A Handbook of Agile Software Craftsmanship'
 type: book
 url: https://www.goodreads.com/book/show/3735293
