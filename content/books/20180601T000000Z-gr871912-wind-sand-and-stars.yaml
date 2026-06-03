@@ -3,7 +3,8 @@ date_read: '2018-06-01'
 my_rating: 5
 status: read
 tags:
-- favorites
+  - aviation
+  - memoir
 title: Wind, Sand, and Stars
 type: book
 url: https://www.goodreads.com/book/show/871912

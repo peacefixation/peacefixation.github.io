@@ -3,7 +3,9 @@ date_read: '2022-08-08'
 my_rating: 4
 status: read
 tags:
-- computing
+  - computing
+  - programming
+  - go
 title: 'Concurrency in Go: Tools and Techniques for Developers'
 type: book
 url: https://www.goodreads.com/book/show/30413199

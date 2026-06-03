@@ -3,7 +3,8 @@ date_read: '2015-12-10'
 my_rating: 5
 status: read
 tags:
-- favorites
+  - fiction
+  - world war 1
 title: A Very Long Engagement
 type: book
 url: https://www.goodreads.com/book/show/18873323
