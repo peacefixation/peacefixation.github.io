@@ -55,7 +55,8 @@ func enrichNode(item *LoadedNode, r *enrich.Registry) {
 		return
 	}
 
-	key := enrichKeyForType(enrichType, item.Data)
+	keyField, _ := item.Data["enrich_key"].(string)
+	key, _ := item.Data[keyField].(string)
 	if key == "" {
 		return
 	}
@@ -68,22 +69,6 @@ func enrichNode(item *LoadedNode, r *enrich.Registry) {
 		maps.Copy(item.Data, data)
 	}
 	delete(item.Data, "enrich")
+	delete(item.Data, "enrich_key")
 	delete(item.Data, "enrich_refresh")
-}
-
-// enrichKeyForType returns the lookup key for the given enricher type from item data.
-func enrichKeyForType(enricherType enrich.EnricherType, data map[string]any) string {
-	switch enricherType {
-	case enrich.EnricherTypeOpenGraph:
-		v, _ := data["url"].(string)
-		return v
-	case enrich.EnricherTypeYouTubeChannel:
-		v, _ := data["channelId"].(string)
-		return v
-	case enrich.EnricherTypeGoodreads:
-		v, _ := data["url"].(string)
-		return v
-	default:
-		return ""
-	}
 }

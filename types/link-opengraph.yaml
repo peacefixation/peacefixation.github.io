@@ -4,6 +4,7 @@ defaults:
   cardTemplate: link-opengraph-card.html
   icon: link
   enrich: opengraph
+  enrich_key: url
   externalLink: true
 fields:
   - name: url

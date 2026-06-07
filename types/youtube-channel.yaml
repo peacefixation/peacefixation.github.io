@@ -1,6 +1,7 @@
 name: YouTube Channel
 defaults:
   enrich: youtube-channel
+  enrich_key: channelId
   embed: youtube-channel
   icon: play
   template: youtube-channel-item.html

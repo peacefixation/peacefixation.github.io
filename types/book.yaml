@@ -3,6 +3,7 @@ defaults:
   template: book-page.html
   cardTemplate: book-card.html
   enrich: goodreads
+  enrich_key: url
   icon: book
 fields:
   - name: url
