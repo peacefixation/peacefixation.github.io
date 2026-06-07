@@ -21,13 +21,10 @@ staticJS:
   - js/slideshow.js
 
 defaults:
-  page:
-    template: item.html
-  list:
-    template: list.html
-    cardTemplate: card.html
-    sortBy: date
-    sortOrder: desc
+  template: item.html
+  cardTemplate: card.html
+  sortBy: date
+  sortOrder: desc
 
 tags:
   enabled: true

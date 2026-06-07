@@ -20,7 +20,7 @@ type photoPlugin struct{}
 // ScanChildren scans dir for image files and returns a synthetic ItemConfig
 // for each one. Sidecar YAML files (same stem, .yaml extension) are merged
 // into the item data when present.
-func (photoPlugin) ScanChildren(dir, outputPrefix string, cfg *config.SiteConfig, parent listMeta) ([]config.ItemConfig, error) {
+func (photoPlugin) ScanChildren(dir, outputPrefix string, cfg *config.SiteConfig, parent nodeMeta) ([]config.NodeConfig, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -29,7 +29,7 @@ func (photoPlugin) ScanChildren(dir, outputPrefix string, cfg *config.SiteConfig
 		return nil, fmt.Errorf("reading directory %q: %w", dir, err)
 	}
 
-	var items []config.ItemConfig
+	var items []config.NodeConfig
 	for _, entry := range entries {
 		if entry.IsDir() {
 			continue
@@ -48,9 +48,9 @@ func (photoPlugin) ScanChildren(dir, outputPrefix string, cfg *config.SiteConfig
 		if sidecar := readSidecar(filepath.Join(dir, stem+".yaml")); sidecar != nil {
 			maps.Copy(data, sidecar)
 		}
-		items = append(items, config.ItemConfig{
+		items = append(items, config.NodeConfig{
 			Name:         stem,
-			Template:     cfg.Defaults.Page.Template,
+			Template:     cfg.Defaults.Template,
 			CardTemplate: parent.CardTemplate,
 			OutputPath:   outputPrefix + stem + "/index.html",
 			DataSource: config.DataSourceConfig{

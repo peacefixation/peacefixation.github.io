@@ -17,7 +17,7 @@ type SiteConfig struct {
 	StaticJS         []string     `mapstructure:"staticJS"`
 	TemplateDir      string       `mapstructure:"templateDir"`
 	ThemesDir        string       `mapstructure:"themesDir"`
-	ItemsDir         string       `mapstructure:"itemsDir"`
+	TypesDir         string       `mapstructure:"typesDir"`
 	Theme            string       `mapstructure:"theme"`
 	Defaults         Defaults     `mapstructure:"defaults"`
 	Server           ServerConfig `mapstructure:"server"`
@@ -34,7 +34,7 @@ type SiteConfig struct {
 }
 
 // SiteMapNode is one node in the site map tree.
-// Directory items carry Children; leaf items have an empty Children slice.
+// Branch nodes carry Children; leaf nodes have an empty Children slice.
 type SiteMapNode struct {
 	Title      string
 	OutputPath string
@@ -43,19 +43,9 @@ type SiteMapNode struct {
 	Children   []SiteMapNode
 }
 
-// Defaults holds fallback build config used when an item does not specify its own.
+// Defaults holds fallback build config used when a node does not specify its own.
+// A single template is used for all nodes; the template self-selects via {{if .List}}.
 type Defaults struct {
-	Page PageDefaults `mapstructure:"page"`
-	List ListDefaults `mapstructure:"list"`
-}
-
-// PageDefaults is the fallback config for standalone file items.
-type PageDefaults struct {
-	Template string `mapstructure:"template"`
-}
-
-// ListDefaults is the fallback config for directory items and their children.
-type ListDefaults struct {
 	Template     string `mapstructure:"template"`
 	CardTemplate string `mapstructure:"cardTemplate"`
 	SortBy       string `mapstructure:"sortBy"`
@@ -63,21 +53,21 @@ type ListDefaults struct {
 	Limit        int    `mapstructure:"limit"`
 }
 
-// ItemConfig configures a single item (file or directory).
-// Directory items carry Children discovered by scanning; file items do not.
-type ItemConfig struct {
+// NodeConfig configures a single node (leaf or branch).
+// Branch nodes carry Children discovered by scanning; leaf nodes do not.
+type NodeConfig struct {
 	Name               string           `mapstructure:"name"`
 	Template           string           `mapstructure:"template"`
 	CardTemplate       string           `mapstructure:"cardTemplate"`
 	OutputPath         string           `mapstructure:"outputPath"`
 	DataSource         DataSourceConfig `mapstructure:"dataSource"`
-	Children           []ItemConfig
+	Children           []NodeConfig
 	SortBy             string `mapstructure:"sortBy"`
 	SortOrder          string `mapstructure:"sortOrder"`
 	Limit              int    `mapstructure:"limit"`
 	PinnedField        string `mapstructure:"pinnedField"`
 	PinnedValue        string `mapstructure:"pinnedValue"`
-	ListType           string `mapstructure:"-"` // "photos" for image-scanning lists
+	Scanner            string `mapstructure:"-"` // plugin name, e.g. "photos"
 	ExcludeFromSiteMap bool   `mapstructure:"-"`
 }
 
@@ -132,7 +122,7 @@ func Load(path string) (*SiteConfig, error) {
 	viper.SetDefault("staticDir", "static")
 	viper.SetDefault("templateDir", "templates")
 	viper.SetDefault("themesDir", "themes")
-	viper.SetDefault("itemsDir", "items")
+	viper.SetDefault("typesDir", "types")
 	viper.SetDefault("server.host", "localhost")
 	viper.SetDefault("server.port", 8080)
 	viper.SetDefault("ogCacheFile", "cache/opengraph.json")
@@ -151,6 +141,9 @@ func Load(path string) (*SiteConfig, error) {
 func Validate(cfg *SiteConfig) error {
 	if cfg.Title == "" {
 		return fmt.Errorf("title is required")
+	}
+	if cfg.Defaults.Template == "" {
+		return fmt.Errorf("defaults.template is required")
 	}
 	return nil
 }

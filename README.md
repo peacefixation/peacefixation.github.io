@@ -4,13 +4,15 @@ A convention-based static site generator written in Go. Content lives in files; 
 
 ## Concepts
 
-**Items** are content files (`.md`, `.yaml`) in the content directory. Each item has a data source, a template, and an output path. Items can be anything: a home page, a blog post, an embedded video, a link.
+**Nodes** are the single primitive. A node has a data source, a template, and an output path.
 
-**Lists** are directories containing a `list.yaml` file. A list renders its children as cards, sorted and paginated according to its config. Lists can be nested.
+**Leaf nodes** are content files (`.md`, `.yaml`, `.json`) in the content directory. They have no children and can be anything: a home page, a blog post, an embedded video, a link.
+
+**Branch nodes** are directories containing a `node.yaml` file. A branch node renders its children as cards, sorted and paginated according to its config. Branch nodes can be nested.
 
 ## Getting started
 
-Initialise a new site skeleton in the current directory:
+Initialise a new site skeleton:
 
 ```bash
 ssg init mysite
@@ -42,33 +44,24 @@ contentDir: content
 outputDir: public
 templateDir: templates
 themesDir: themes
-itemsDir: items
+typesDir: types
 theme: default
 
 defaults:
-  page:
-    template: page.html
-  list:
-    template: list.html
-    cardTemplate: item.html
-    sortBy: date
-    sortOrder: desc
-    limit: 0        # 0 = unlimited
+  template: node.html
+  cardTemplate: card.html
+  sortBy: date
+  sortOrder: desc
+  limit: 0        # 0 = unlimited
 ```
 
-## Creating a list
+## Creating a branch node
 
 ```bash
-ssg new list music --title "Music" --types youtube,soundcloud
+ssg new node music --title "Music" --types youtube,soundcloud
 ```
 
-Or interactively:
-
-```bash
-ssg new
-```
-
-This creates `content/music/list.yaml`:
+This creates `content/music/node.yaml`:
 
 ```yaml
 title: Music
@@ -77,29 +70,27 @@ types:
   - soundcloud
 ```
 
-The `types` field restricts which item types can be added to the list. Leave it out to allow all types. Lists can be nested using path arguments: `ssg new list music/live --title "Live Sets"`.
+The `types` field restricts which node types can be added. Leave it out to allow all types. Branch nodes can be nested using path arguments: `ssg new node music/live --title "Live Sets"`.
 
-## Adding items
+## Adding a leaf node
 
 ```bash
-ssg new item --list music --type youtube url=https://youtu.be/xyz title="Banco de Gaia"
+ssg new node --parent music --type youtube url=https://youtu.be/xyz title="Banco de Gaia"
 ```
 
-Or run `ssg new` with no arguments for an interactive prompt.
+Fields are supplied as `key=value` arguments. Required fields are defined by the node type — missing required fields produce an error.
 
-Fields are supplied as `key=value` arguments. Required fields are defined by the item type — missing required fields produce an error.
-
-Items are written as timestamped files named `{timestamp}-{slug}.{ext}`, e.g. `20260418T120000Z-banco-de-gaia.yaml`. The format depends on the item type:
+Leaf nodes are written as timestamped files named `{timestamp}-{slug}.{ext}`, e.g. `20260418T120000Z-banco-de-gaia.yaml`. The format depends on the node type:
 
 - Most types → `.yaml` file
 - Types with `format: markdown` → `.md` file with YAML frontmatter and an empty body for prose content
 
-## Item types
+## Node types
 
-Item type definitions live in `items/`:
+Node type definitions live in `types/`:
 
 ```yaml
-# items/youtube.yaml
+# types/youtube.yaml
 name: YouTube Video
 defaults:
   embed: youtube
@@ -110,12 +101,12 @@ fields:
     required: true
 ```
 
-At build time, `defaults` are merged into item data (item fields take precedence).
+At build time, `defaults` are merged into node data (node fields take precedence).
 
-To make an item type produce a markdown file with YAML frontmatter, add `format: markdown`:
+To make a node type produce a markdown file with YAML frontmatter, add `format: markdown`:
 
 ```yaml
-# items/post.yaml
+# types/post.yaml
 name: Post
 format: markdown
 fields:
@@ -125,38 +116,28 @@ fields:
     required: true
 ```
 
-This produces a `.md` file with a YAML frontmatter block and an empty body for the post content.
-
 ## YouTube channels
 
-The `youtube-channel` item type fetches channel metadata and the latest video from the YouTube Data API v3 and renders them as a rich page and card.
+The `youtube-channel` node type fetches channel metadata and the latest video from the YouTube Data API v3.
 
 ### Prerequisites
 
-Create a Google Cloud project, enable the YouTube Data API v3, and generate an API key. Set it in your environment before running a build:
+Create a Google Cloud project, enable the YouTube Data API v3, and generate an API key:
 
 ```bash
 export YOUTUBE_DATA_API_KEY=your_api_key_here
 ```
 
-Add the variable to a `.env` file to make it persistent:
-
-```
-YOUTUBE_DATA_API_KEY=your_api_key_here
-```
-
-Then source it before building: `export $(cat .env | xargs)`.
-
-### Create a channels list
+### Create a channels branch node
 
 ```bash
-ssg new list channels --title "Channels" --types youtube-channel
+ssg new node channels --title "Channels" --types youtube-channel
 ```
 
 ### Add a channel
 
 ```bash
-ssg new item --list channels --type youtube-channel channelId=UCxxxxxxxxxxxxxxxxxxxxxx title="Channel Name"
+ssg new node --parent channels --type youtube-channel channelId=UCxxxxxxxxxxxxxxxxxxxxxx title="Channel Name"
 ```
 
 Or write the YAML directly:
@@ -165,10 +146,10 @@ Or write the YAML directly:
 # content/channels/20260524T120000Z-my-channel.yaml
 type: youtube-channel
 channelId: UCxxxxxxxxxxxxxxxxxxxxxx
-title: My Channel   # fallback title if the API call fails
+title: My Channel
 ```
 
-At build time the following fields are fetched and injected into the item's template data:
+At build time the following fields are fetched and injected into the node's template data:
 
 | Field | Description |
 |---|---|
@@ -179,21 +160,11 @@ At build time the following fields are fetched and injected into the item's temp
 | `yt_latest_video_id` | Latest video ID |
 | `yt_latest_video_title` | Latest video title |
 
-### Caching
-
-Fetched data is cached in `youtube-cache.json` (configurable via `youtubeCacheFile` in `site.yaml`). Subsequent builds use the cache and make no API calls. Commit this file to avoid hitting API quota on every build.
-
-To re-fetch all channels:
-
-```bash
-ssg build --refresh-yt
-```
-
-To re-fetch a single channel, add `yt_refresh: true` to its content file and remove it after the next build.
+Fetched data is cached in `youtubeCacheFile` (configurable in `site.yaml`). Commit this file to avoid hitting API quota on every build.
 
 ## Custom templates
 
-Any item can override its template by setting a `template` field in its frontmatter or YAML data:
+Any node can override its template by setting a `template` field in its frontmatter or YAML data:
 
 ```yaml
 # content/blog/20260517T053555Z-my-post.md
@@ -206,8 +177,6 @@ template: blog-post.html
 Post body here.
 ```
 
-The named template must exist in `templateDir`.
-
 ## CLI reference
 
 | Command | Description |
@@ -215,6 +184,5 @@ The named template must exist in `templateDir`.
 | `ssg init <name>` | Scaffold a new site skeleton |
 | `ssg build [--clean]` | Build the site to `outputDir` |
 | `ssg serve [--watch]` | Serve locally; `--watch` hot-reloads on changes |
-| `ssg new` | Interactively create a list or item |
-| `ssg new list <name> --title <title> [flags]` | Create a new list |
-| `ssg new item --list <list> --type <type> [key=value ...]` | Add a new item to a list |
+| `ssg new node <name> --title <title> [flags]` | Create a branch node |
+| `ssg new node [--parent <node>] [--type <type>] [key=value ...]` | Create a leaf node |

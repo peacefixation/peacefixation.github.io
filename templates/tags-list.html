@@ -5,7 +5,7 @@
 <body>
   {{template "nav.html" .}}
   <ul class="tags-list">
-    {{range .List}}{{.}}{{end}}
+    {{range .Children}}{{.}}{{end}}
   </ul>
   {{template "foot.html" .}}
 </body>

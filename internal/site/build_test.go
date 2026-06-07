@@ -19,13 +19,10 @@ func buildTestSite(t *testing.T, dir string) {
 		OutputDir:   filepath.Join(dir, "output"),
 		TemplateDir: filepath.Join(dir, "templates"),
 		ThemesDir:   filepath.Join(dir, "themes"),
-		ItemsDir:    filepath.Join(dir, "items"),
+		TypesDir:    filepath.Join(dir, "types"),
 		Defaults: config.Defaults{
-			Page: config.PageDefaults{Template: "item.html"},
-			List: config.ListDefaults{
-				Template:     "list.html",
-				CardTemplate: "card.html",
-			},
+			Template:     "item.html",
+			CardTemplate: "card.html",
 		},
 	}
 	_, err := site.Build(cfg, datasource.DefaultRegistry(), false)
@@ -54,87 +51,71 @@ func assertFile(t *testing.T, outputDir, rel string) {
 	}
 }
 
-func TestBuild_FileItemWithSubList(t *testing.T) {
+func TestBuild_NodeYaml_BackwardsCompat(t *testing.T) {
 	dir := t.TempDir()
 
-	// Minimal templates — no head.html/foot.html required.
 	mustWriteFile(t, filepath.Join(dir, "templates", "item.html"),
 		`{{define "item.html"}}{{.title}}{{end}}`)
-	mustWriteFile(t, filepath.Join(dir, "templates", "list.html"),
-		`{{define "list.html"}}{{.title}}{{range .List}}{{.}}{{end}}{{end}}`)
 	mustWriteFile(t, filepath.Join(dir, "templates", "card.html"),
 		`{{define "card.html"}}{{.title}}{{end}}`)
 
-	// File item declaring one sub-list.
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg.yaml"),
-		"title: LSG\nlists:\n  - live\n")
-
-	// Sub-list directory with list.yaml and one content item.
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg", "live", "list.yaml"),
-		"title: Live Sets\n")
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg", "live", "20260501T000000Z-wembley.yaml"),
-		"title: Wembley\n")
+	// A directory with the new node.yaml convention.
+	mustWriteFile(t, filepath.Join(dir, "content", "music", "node.yaml"),
+		"title: Music\n")
+	mustWriteFile(t, filepath.Join(dir, "content", "music", "20260501T000000Z-track.yaml"),
+		"title: Track\n")
 
 	buildTestSite(t, dir)
 
 	out := filepath.Join(dir, "output")
-	assertFile(t, out, "20260418T120000Z-lsg/index.html")
-	assertFile(t, out, "20260418T120000Z-lsg/live/index.html")
-	assertFile(t, out, "20260418T120000Z-lsg/live/20260501T000000Z-wembley/index.html")
+	assertFile(t, out, "music/index.html")
+	assertFile(t, out, "music/20260501T000000Z-track/index.html")
 }
 
-func TestBuild_FileItemWithSubList_DeepNesting(t *testing.T) {
+func TestBuild_ListYaml_BackwardsCompat(t *testing.T) {
 	dir := t.TempDir()
 
 	mustWriteFile(t, filepath.Join(dir, "templates", "item.html"),
 		`{{define "item.html"}}{{.title}}{{end}}`)
-	mustWriteFile(t, filepath.Join(dir, "templates", "list.html"),
-		`{{define "list.html"}}{{.title}}{{range .List}}{{.}}{{end}}{{end}}`)
 	mustWriteFile(t, filepath.Join(dir, "templates", "card.html"),
 		`{{define "card.html"}}{{.title}}{{end}}`)
 
-	// Top-level file item.
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg.yaml"),
-		"title: LSG\nlists:\n  - live\n")
-
-	// Sub-list with a nested file item that also declares a sub-list.
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg", "live", "list.yaml"),
-		"title: Live Sets\n")
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg", "live", "20260501T000000Z-wembley.yaml"),
-		"title: Wembley\nlists:\n  - sets\n")
-
-	// Sub-sub-list.
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg", "live", "20260501T000000Z-wembley", "sets", "list.yaml"),
-		"title: Sets\n")
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg", "live", "20260501T000000Z-wembley", "sets", "20260501T200000Z-set1.yaml"),
-		"title: Set 1\n")
+	mustWriteFile(t, filepath.Join(dir, "content", "music", "node.yaml"),
+		"title: Music\n")
+	mustWriteFile(t, filepath.Join(dir, "content", "music", "20260501T000000Z-track.yaml"),
+		"title: Track\n")
 
 	buildTestSite(t, dir)
 
 	out := filepath.Join(dir, "output")
-	assertFile(t, out, "20260418T120000Z-lsg/index.html")
-	assertFile(t, out, "20260418T120000Z-lsg/live/index.html")
-	assertFile(t, out, "20260418T120000Z-lsg/live/20260501T000000Z-wembley/index.html")
-	assertFile(t, out, "20260418T120000Z-lsg/live/20260501T000000Z-wembley/sets/index.html")
-	assertFile(t, out, "20260418T120000Z-lsg/live/20260501T000000Z-wembley/sets/20260501T200000Z-set1/index.html")
+	assertFile(t, out, "music/index.html")
+	assertFile(t, out, "music/20260501T000000Z-track/index.html")
 }
 
-func TestBuild_FileItemWithNoSubListDir_Skipped(t *testing.T) {
+func TestBuild_SidecarNodeYaml_GivesFileItemChildren(t *testing.T) {
 	dir := t.TempDir()
 
 	mustWriteFile(t, filepath.Join(dir, "templates", "item.html"),
-		`{{define "item.html"}}{{.title}}{{end}}`)
-	mustWriteFile(t, filepath.Join(dir, "templates", "list.html"),
-		`{{define "list.html"}}{{.title}}{{end}}`)
+		`{{define "item.html"}}{{.title}}{{range .Children}}{{.}}{{end}}{{end}}`)
 	mustWriteFile(t, filepath.Join(dir, "templates", "card.html"),
 		`{{define "card.html"}}{{.title}}{{end}}`)
 
-	// File item declares "live" but the sibling directory does not exist.
-	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-lsg.yaml"),
-		"title: LSG\nlists:\n  - live\n")
+	// File item with a sidecar node.yaml.
+	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-event.yaml"),
+		"title: Event\n")
+	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-event.node.yaml"),
+		"cardTemplate: card.html\nsortBy: date\n")
 
-	// Build should succeed; the missing sub-list is silently skipped.
+	// Child directory discovered from the sibling dir.
+	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-event", "photos", "node.yaml"),
+		"title: Photos\n")
+	mustWriteFile(t, filepath.Join(dir, "content", "20260418T120000Z-event", "photos", "20260501T000000Z-photo.yaml"),
+		"title: Photo 1\n")
+
 	buildTestSite(t, dir)
 
-	assertFile(t, filepath.Join(dir, "output"), "20260418T120000Z-lsg/index.html")
+	out := filepath.Join(dir, "output")
+	assertFile(t, out, "20260418T120000Z-event/index.html")
+	assertFile(t, out, "20260418T120000Z-event/photos/index.html")
+	assertFile(t, out, "20260418T120000Z-event/photos/20260501T000000Z-photo/index.html")
 }

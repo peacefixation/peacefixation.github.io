@@ -54,7 +54,7 @@ func writePage(page Page, ctx AssemblyContext, r *renderer.Renderer, outputDir s
 	renderData["Site"] = ctx.Cfg
 	renderData["OutputPath"] = page.Config.OutputPath
 	renderData["RootItems"] = ctx.RootNavItems
-	renderData["List"] = cards
+	renderData["Children"] = cards
 	renderData["Theme"] = ctx.ThemeData
 	renderData["StaticJS"] = staticJS
 	renderData["BreadcrumbLinks"] = breadcrumbLinks
@@ -76,19 +76,19 @@ func writePage(page Page, ctx AssemblyContext, r *renderer.Renderer, outputDir s
 }
 
 // renderCardSpecs resolves a slice of CardSpecs into rendered HTML fragments.
-// Nested []CardSpec values under the "List" key are resolved recursively before
-// each card is rendered, preserving the bottom-up order required by list cards
+// Nested []CardSpec values under the "Children" key are resolved recursively before
+// each card is rendered, preserving the bottom-up order required by branch cards
 // that themselves render children.
 func renderCardSpecs(r *renderer.Renderer, specs []CardSpec) ([]template.HTML, error) {
 	fragments := make([]template.HTML, 0, len(specs))
 	for _, spec := range specs {
 		data := maps.Clone(spec.Data)
-		if nested, ok := data["List"].([]CardSpec); ok {
+		if nested, ok := data["Children"].([]CardSpec); ok {
 			resolved, err := renderCardSpecs(r, nested)
 			if err != nil {
 				return nil, err
 			}
-			data["List"] = resolved
+			data["Children"] = resolved
 		}
 		html, err := r.RenderFragment(spec.Template, data)
 		if err != nil {

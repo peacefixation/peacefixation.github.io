@@ -9,22 +9,22 @@ import (
 	"github.com/peacefixation/ssg/internal/config"
 )
 
-// taggedItem pairs a LoadedItem with the ordered ancestor chain that leads to
+// taggedItem pairs a LoadedNode with the ordered ancestor chain that leads to
 // it, captured at collection time for use as breadcrumbs on the tag page.
 type taggedItem struct {
-	item      LoadedItem
+	item      LoadedNode
 	ancestors []map[string]any
 }
 
-// collectTags recursively walks the LoadedItem tree and returns a map from
+// collectTags recursively walks the LoadedNode tree and returns a map from
 // normalised tag name to the items carrying that tag.
 // ancestors tracks the list chain at the current level and should be nil at
 // the top level.
-func collectTags(items []LoadedItem, ancestors []map[string]any) map[string][]taggedItem {
+func collectTags(items []LoadedNode, ancestors []map[string]any) map[string][]taggedItem {
 	result := make(map[string][]taggedItem)
 	for _, item := range items {
 		if len(item.Children) > 0 {
-			// Directory item: extend the ancestor chain and recurse.
+			// Branch node: extend the ancestor chain and recurse.
 			title, _ := item.Data["title"].(string)
 			if title == "" {
 				title = item.Config.Name
@@ -34,7 +34,7 @@ func collectTags(items []LoadedItem, ancestors []map[string]any) map[string][]ta
 				result[tag] = append(result[tag], tagged...)
 			}
 		} else {
-			// Leaf item: extract tags from already-loaded data.
+			// Leaf node: extract tags from already-loaded data.
 			if isDraft(item.Data) {
 				continue
 			}
@@ -78,11 +78,11 @@ var styleTemplates = map[string][2]string{
 	"heatmap": {"tags-heatmap.html", "tag-heatmap-card.html"},
 }
 
-// buildTagsItem constructs the virtual tags/ root LoadedItem from the collected
+// buildTagsNode constructs the virtual tags/ root LoadedNode from the collected
 // tag map. The root lists all tags as children; each tag is itself a list whose
 // children are copies of the real items carrying that tag, with sourcePath
 // injected directly into their data for breadcrumb rendering.
-func buildTagsItem(tagMap map[string][]taggedItem, cfg *config.SiteConfig) LoadedItem {
+func buildTagsNode(tagMap map[string][]taggedItem, cfg *config.SiteConfig) LoadedNode {
 	style := cfg.Tags.Style
 	var styleTemplate, styleCardTemplate string
 	if d, ok := styleTemplates[style]; ok {
@@ -115,7 +115,7 @@ func buildTagsItem(tagMap map[string][]taggedItem, cfg *config.SiteConfig) Loade
 		}
 	}
 
-	tagChildren := make([]LoadedItem, 0, len(sortedTags))
+	tagChildren := make([]LoadedNode, 0, len(sortedTags))
 	for _, tag := range sortedTags {
 		items := tagMap[tag]
 		slug := tagSlug(tag)
@@ -125,27 +125,27 @@ func buildTagsItem(tagMap map[string][]taggedItem, cfg *config.SiteConfig) Loade
 			weight = float64(len(items)-minCount) / float64(maxCount-minCount)
 		}
 
-		// Each tagged item becomes a child LoadedItem. sourcePath is injected
+		// Each tagged item becomes a child LoadedNode. sourcePath is injected
 		// directly into a cloned data map for breadcrumb rendering on the tag page.
-		children := make([]LoadedItem, 0, len(items))
+		children := make([]LoadedNode, 0, len(items))
 		for _, ti := range items {
 			itemData := maps.Clone(ti.item.Data)
 			itemData["sourcePath"] = ti.ancestors
-			children = append(children, LoadedItem{
+			children = append(children, LoadedNode{
 				Config:   ti.item.Config,
 				Data:     itemData,
 				Children: ti.item.Children,
 			})
 		}
 
-		tagChildren = append(tagChildren, LoadedItem{
-			Config: config.ItemConfig{
+		tagChildren = append(tagChildren, LoadedNode{
+			Config: config.NodeConfig{
 				Name:         slug,
 				Template:     tagTemplate,
 				CardTemplate: itemCardTemplate,
 				OutputPath:   "tags/" + slug + "/index.html",
-				SortBy:       cfg.Defaults.List.SortBy,
-				SortOrder:    cfg.Defaults.List.SortOrder,
+				SortBy:       cfg.Defaults.SortBy,
+				SortOrder:    cfg.Defaults.SortOrder,
 			},
 			Data: map[string]any{
 				"title":  tag,
@@ -156,8 +156,8 @@ func buildTagsItem(tagMap map[string][]taggedItem, cfg *config.SiteConfig) Loade
 		})
 	}
 
-	return LoadedItem{
-		Config: config.ItemConfig{
+	return LoadedNode{
+		Config: config.NodeConfig{
 			Name:               "tags",
 			Template:           tagsTemplate,
 			CardTemplate:       tagCardTemplate,

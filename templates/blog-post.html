@@ -6,7 +6,7 @@
   {{template "nav.html" .}}
   {{if .title}}<h1>{{.title}}</h1>{{end}}
   {{.body}}
-  {{range .List}}{{.}}{{end}}
+  {{range .Children}}{{.}}{{end}}
   {{template "foot.html" .}}
 </body>
 </html>

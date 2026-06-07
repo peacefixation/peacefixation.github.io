@@ -10,20 +10,20 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// itemTypeConfig is the in-memory representation of an items/{type}.yaml file.
-type itemTypeConfig struct {
+// nodeTypeConfig is the in-memory representation of a types/{type}.yaml file.
+type nodeTypeConfig struct {
 	Name     string         `yaml:"name"`
 	Defaults map[string]any `yaml:"defaults"`
 }
 
-// loadItemTypeDefaults reads items/{typeName}.yaml and returns its defaults map.
+// loadTypeDefaults reads types/{typeName}.yaml and returns its defaults map.
 // Returns nil if the file does not exist or cannot be parsed.
-func loadItemTypeDefaults(itemsDir, typeName string) map[string]any {
-	data, err := os.ReadFile(filepath.Join(itemsDir, typeName+".yaml"))
+func loadTypeDefaults(typesDir, typeName string) map[string]any {
+	data, err := os.ReadFile(filepath.Join(typesDir, typeName+".yaml"))
 	if err != nil {
 		return nil
 	}
-	var cfg itemTypeConfig
+	var cfg nodeTypeConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil
 	}
@@ -39,16 +39,16 @@ func applyTypeDefaults(data map[string]any, defaults map[string]any) {
 	}
 }
 
-// enrichTree walks the LoadedItem tree and enriches each item in place.
-func enrichTree(items []LoadedItem, r *enrich.Registry) {
+// enrichTree walks the LoadedNode tree and enriches each item in place.
+func enrichTree(items []LoadedNode, r *enrich.Registry) {
 	for i := range items {
-		enrichItem(&items[i], r)
+		enrichNode(&items[i], r)
 		enrichTree(items[i].Children, r)
 	}
 }
 
-// enrichItem applies enrichment to a single LoadedItem in place.
-func enrichItem(item *LoadedItem, r *enrich.Registry) {
+// enrichNode applies enrichment to a single LoadedNode in place.
+func enrichNode(item *LoadedNode, r *enrich.Registry) {
 	rawType, _ := item.Data["enrich"].(string)
 	enrichType := enrich.EnricherType(rawType)
 	if enrichType == "" {

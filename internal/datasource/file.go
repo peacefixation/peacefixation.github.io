@@ -37,7 +37,7 @@ func (f *FileSource) FetchOne() (map[string]any, error) {
 }
 
 // FetchMany expands cfg.Glob (or cfg.Path/*) and returns data for each file.
-// Files named list.yaml are skipped — they are list metadata, not items.
+// node.yaml files are skipped — they are metadata, not content.
 func (f *FileSource) FetchMany() ([]map[string]any, error) {
 	pattern := f.cfg.Glob
 	if pattern == "" {
@@ -51,7 +51,8 @@ func (f *FileSource) FetchMany() ([]map[string]any, error) {
 
 	results := make([]map[string]any, 0, len(matches))
 	for _, match := range matches {
-		if filepath.Base(match) == "list.yaml" {
+		base := filepath.Base(match)
+		if base == "node.yaml" {
 			continue
 		}
 		data, err := readFile(match)

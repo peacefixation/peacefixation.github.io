@@ -7,7 +7,7 @@ import (
 // buildSiteMap recursively builds the full site map tree from the loaded item
 // tree, skipping the homepage and items with ExcludeFromSiteMap set.
 // Titles and icons are read from item.Data, which is already loaded.
-func buildSiteMap(items []LoadedItem, itemsDir string) []config.SiteMapNode {
+func buildSiteMap(items []LoadedNode, itemsDir string) []config.SiteMapNode {
 	nodes := make([]config.SiteMapNode, 0, len(items))
 	for _, item := range items {
 		if item.Config.OutputPath == "index.html" {
@@ -43,7 +43,7 @@ func buildSiteMap(items []LoadedItem, itemsDir string) []config.SiteMapNode {
 
 // buildNavItems returns lightweight nav records (title, outputPath, count) for
 // each item. Data is read from item.Data, which is already loaded.
-func buildNavItems(items []LoadedItem) []map[string]any {
+func buildNavItems(items []LoadedNode) []map[string]any {
 	nav := make([]map[string]any, 0, len(items))
 	for _, item := range items {
 		record := make(map[string]any, len(item.Data)+3)

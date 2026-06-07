@@ -14,12 +14,12 @@ var contentExts = map[string]bool{
 	".md": true, ".markdown": true, ".json": true, ".yaml": true, ".yml": true,
 }
 
-// listMeta is the in-memory representation of a list.yaml file.
-// It carries browser extension metadata (title, fields) plus optional build
-// overrides (template, cardTemplate, sortBy, sortOrder, limit).
-type listMeta struct {
+// nodeMeta is the in-memory representation of a node.yaml file.
+// It carries build overrides (template, cardTemplate, sortBy, sortOrder, limit)
+// and an optional scanner name that selects a ChildScanner plugin.
+type nodeMeta struct {
 	Title        string `yaml:"title"`
-	Type         string `yaml:"type"` // "photos" triggers image-file scanning
+	Scanner      string `yaml:"scanner"`   // e.g. "photos" — triggers plugin scanning
 	Template     string `yaml:"template"`
 	CardTemplate string `yaml:"cardTemplate"`
 	SortBy       string `yaml:"sortBy"`
@@ -29,11 +29,20 @@ type listMeta struct {
 	PinnedValue  string `yaml:"pinnedValue"`
 }
 
-// scanDir recursively walks dir and returns an ItemConfig for every discovered item.
-// If the parent list's type is registered in listPlugins as a ChildScanner, that
-// scanner is used instead of the normal content scan.
-func scanDir(dir, outputPrefix string, cfg *config.SiteConfig, parent listMeta) ([]config.ItemConfig, error) {
-	if p, ok := listPlugins[parent.Type]; ok {
+// nodeConfigFile returns the path to node.yaml in dir and true if found.
+func nodeConfigFile(dir string) (string, bool) {
+	p := filepath.Join(dir, "node.yaml")
+	if _, err := os.Stat(p); err == nil {
+		return p, true
+	}
+	return "", false
+}
+
+// scanDir recursively walks dir and returns an ItemConfig for every discovered node.
+// If the parent node's scanner is registered in nodePlugins as a ChildScanner,
+// that scanner is used instead of the normal content scan.
+func scanDir(dir, outputPrefix string, cfg *config.SiteConfig, parent nodeMeta) ([]config.NodeConfig, error) {
+	if p, ok := nodePlugins[parent.Scanner]; ok {
 		if scanner, ok := p.(ChildScanner); ok {
 			return scanner.ScanChildren(dir, outputPrefix, cfg, parent)
 		}
@@ -42,10 +51,10 @@ func scanDir(dir, outputPrefix string, cfg *config.SiteConfig, parent listMeta) 
 }
 
 // scanContentDir scans a directory for content files and subdirectories:
-//   - Files with a supported extension become page items.
-//   - Subdirectories containing a list.yaml become directory items whose
-//     Children are the result of recursively scanning that subdirectory.
-func scanContentDir(dir, outputPrefix string, cfg *config.SiteConfig, parent listMeta) ([]config.ItemConfig, error) {
+//   - Files with a supported extension become leaf nodes.
+//   - Subdirectories containing a node.yaml become branch nodes
+//     whose Children are the result of recursively scanning that subdirectory.
+func scanContentDir(dir, outputPrefix string, cfg *config.SiteConfig, parent nodeMeta) ([]config.NodeConfig, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -54,52 +63,58 @@ func scanContentDir(dir, outputPrefix string, cfg *config.SiteConfig, parent lis
 		return nil, fmt.Errorf("reading directory %q: %w", dir, err)
 	}
 
-	var items []config.ItemConfig
+	var items []config.NodeConfig
 	for _, entry := range entries {
-		if entry.IsDir() {
-			item, ok, err := scanDirItem(dir, entry.Name(), outputPrefix, cfg, parent)
-			if err != nil {
-				return nil, err
-			}
-			if ok {
-				items = append(items, item)
-			}
-		} else {
-			item, ok := scanFileItem(dir, entry.Name(), outputPrefix, cfg)
-			if ok {
-				items = append(items, item)
-			}
+		item, ok, err := scanNode(dir, entry.Name(), outputPrefix, cfg, parent)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			items = append(items, item)
 		}
 	}
 	return items, nil
 }
 
-// scanDirItem checks whether name is a directory item (contains list.yaml).
-// Returns ok=false for directories without list.yaml (they are ignored).
-func scanDirItem(parentDir, name, outputPrefix string, cfg *config.SiteConfig, parent listMeta) (config.ItemConfig, bool, error) {
+// scanNode dispatches to scanDirNode or scanFileNode based on filesystem type.
+func scanNode(parentDir, name, outputPrefix string, cfg *config.SiteConfig, parent nodeMeta) (config.NodeConfig, bool, error) {
+	info, err := os.Stat(filepath.Join(parentDir, name))
+	if err != nil {
+		return config.NodeConfig{}, false, nil
+	}
+	if info.IsDir() {
+		return scanDirNode(parentDir, name, outputPrefix, cfg, parent)
+	}
+	item, ok := scanFileNode(parentDir, name, outputPrefix, cfg)
+	return item, ok, nil
+}
+
+// scanDirNode checks whether name is a directory node (contains node.yaml).
+// Returns ok=false for directories without a node config (they are ignored).
+func scanDirNode(parentDir, name, outputPrefix string, cfg *config.SiteConfig, parent nodeMeta) (config.NodeConfig, bool, error) {
 	dir := filepath.Join(parentDir, name)
-	listFile := filepath.Join(dir, "list.yaml")
-	if _, err := os.Stat(listFile); err != nil {
-		return config.ItemConfig{}, false, nil
+	cfgFile, found := nodeConfigFile(dir)
+	if !found {
+		return config.NodeConfig{}, false, nil
 	}
 
-	meta := readListMeta(listFile)
+	meta := readNodeMeta(cfgFile)
 
-	// Resolve each setting: list.yaml → parent list → site.yaml defaults.
-	tmpl := first(meta.Template, parent.Template, cfg.Defaults.List.Template)
-	cardTemplate := first(meta.CardTemplate, parent.CardTemplate, cfg.Defaults.List.CardTemplate)
-	sortBy := first(meta.SortBy, parent.SortBy, cfg.Defaults.List.SortBy)
-	sortOrder := first(meta.SortOrder, parent.SortOrder, cfg.Defaults.List.SortOrder)
+	// Resolve each setting: node.yaml → parent node → site.yaml defaults.
+	tmpl := first(meta.Template, parent.Template, cfg.Defaults.Template)
+	cardTemplate := first(meta.CardTemplate, parent.CardTemplate, cfg.Defaults.CardTemplate)
+	sortBy := first(meta.SortBy, parent.SortBy, cfg.Defaults.SortBy)
+	sortOrder := first(meta.SortOrder, parent.SortOrder, cfg.Defaults.SortOrder)
 	limit := meta.Limit
 	if limit == 0 {
 		limit = parent.Limit
 	}
 	if limit == 0 {
-		limit = cfg.Defaults.List.Limit
+		limit = cfg.Defaults.Limit
 	}
 
-	resolved := listMeta{
-		Type:         meta.Type,
+	resolved := nodeMeta{
+		Scanner:      meta.Scanner,
 		Template:     tmpl,
 		CardTemplate: cardTemplate,
 		SortBy:       sortBy,
@@ -109,34 +124,40 @@ func scanDirItem(parentDir, name, outputPrefix string, cfg *config.SiteConfig, p
 
 	children, err := scanDir(dir, outputPrefix+name+"/", cfg, resolved)
 	if err != nil {
-		return config.ItemConfig{}, false, err
+		return config.NodeConfig{}, false, err
 	}
 
-	return config.ItemConfig{
+	return config.NodeConfig{
 		Name:         name,
 		Template:     tmpl,
 		CardTemplate: cardTemplate,
 		OutputPath:   outputPrefix + name + "/index.html",
-		DataSource:   config.DataSourceConfig{Type: config.FileType, Path: listFile},
+		DataSource:   config.DataSourceConfig{Type: config.FileType, Path: cfgFile},
 		Children:     children,
 		SortBy:       sortBy,
 		SortOrder:    sortOrder,
 		Limit:        limit,
 		PinnedField:  meta.PinnedField,
 		PinnedValue:  meta.PinnedValue,
-		ListType:     meta.Type,
+		Scanner:      meta.Scanner,
 	}, true, nil
 }
 
-// scanFileItem checks whether name is a supported content file.
-// Returns ok=false for files with unsupported extensions and for list.yaml.
-func scanFileItem(parentDir, name, outputPrefix string, cfg *config.SiteConfig) (config.ItemConfig, bool) {
-	if name == "list.yaml" {
-		return config.ItemConfig{}, false
+// scanFileNode checks whether name is a supported content file.
+// Returns ok=false for node config files, sidecar files, and unsupported extensions.
+// If a sidecar {stem}.node.yaml exists alongside the file, its config is applied
+// and the sibling directory {stem}/ is scanned for children.
+func scanFileNode(parentDir, name, outputPrefix string, cfg *config.SiteConfig) (config.NodeConfig, bool) {
+	if name == "node.yaml" {
+		return config.NodeConfig{}, false
+	}
+	// Skip sidecar files ({stem}.node.yaml).
+	if strings.HasSuffix(name, ".node.yaml") {
+		return config.NodeConfig{}, false
 	}
 	ext := strings.ToLower(filepath.Ext(name))
 	if !contentExts[ext] {
-		return config.ItemConfig{}, false
+		return config.NodeConfig{}, false
 	}
 
 	stem := strings.TrimSuffix(name, filepath.Ext(name))
@@ -145,23 +166,71 @@ func scanFileItem(parentDir, name, outputPrefix string, cfg *config.SiteConfig) 
 		outputPath = "index.html"
 	}
 
-	return config.ItemConfig{
+	item := config.NodeConfig{
 		Name:         stem,
-		Template:     cfg.Defaults.Page.Template,
-		CardTemplate: cfg.Defaults.List.CardTemplate,
+		Template:     cfg.Defaults.Template,
+		CardTemplate: cfg.Defaults.CardTemplate,
 		OutputPath:   outputPath,
 		DataSource:   config.DataSourceConfig{Type: config.FileType, Path: filepath.Join(parentDir, name)},
-	}, true
+	}
+
+	// Apply sidecar config if present: {stem}.node.yaml
+	sidecarPath := filepath.Join(parentDir, stem+".node.yaml")
+	if _, err := os.Stat(sidecarPath); err == nil {
+		sidecar := readNodeMeta(sidecarPath)
+		if sidecar.Template != "" {
+			item.Template = sidecar.Template
+		}
+		if sidecar.CardTemplate != "" {
+			item.CardTemplate = sidecar.CardTemplate
+		}
+		if sidecar.SortBy != "" {
+			item.SortBy = sidecar.SortBy
+		}
+		if sidecar.SortOrder != "" {
+			item.SortOrder = sidecar.SortOrder
+		}
+		if sidecar.Limit != 0 {
+			item.Limit = sidecar.Limit
+		}
+		if sidecar.PinnedField != "" {
+			item.PinnedField = sidecar.PinnedField
+		}
+		if sidecar.PinnedValue != "" {
+			item.PinnedValue = sidecar.PinnedValue
+		}
+		// Scan the sibling directory for children.
+		siblingDir := filepath.Join(parentDir, stem)
+		if info, statErr := os.Stat(siblingDir); statErr == nil && info.IsDir() {
+			children, err := scanDir(siblingDir, outputPrefix+stem+"/", cfg, sidecar)
+			if err == nil {
+				item.Children = children
+			}
+		}
+	}
+
+	return item, true
 }
 
-// readListMeta reads build and browser-extension metadata from a list.yaml file.
-func readListMeta(path string) listMeta {
+// readNodeMeta reads build metadata from a node.yaml file.
+func readNodeMeta(path string) nodeMeta {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return listMeta{}
+		return nodeMeta{}
 	}
-	var m listMeta
+	// Decode into a raw map first so we can read the legacy "type" key.
+	var raw map[string]any
+	if err := yaml.Unmarshal(data, &raw); err != nil {
+		return nodeMeta{}
+	}
+	var m nodeMeta
 	_ = yaml.Unmarshal(data, &m)
+	// Fall back to legacy "type" key if "scanner" is not set.
+	if m.Scanner == "" {
+		if t, ok := raw["type"].(string); ok {
+			m.Scanner = t
+		}
+	}
 	return m
 }
 

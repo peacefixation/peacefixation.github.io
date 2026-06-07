@@ -17,7 +17,8 @@
       "Bash(git status:*)",
       "Bash(git show:*)",
       "Bash(mkdir -p /home/matt/src/ssg/plans/07)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && cat {}')"
     ],
     "deny": [
       "Bash(curl:*)",

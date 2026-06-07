@@ -10,7 +10,7 @@ import (
 )
 
 // CardSpec describes a card to be rendered in the Write phase.
-// Data["List"] may itself be []CardSpec for nested list children.
+// Data["Children"] may itself be []CardSpec for nested branch children.
 type CardSpec struct {
 	Template string
 	Data     map[string]any
@@ -21,7 +21,7 @@ type CardSpec struct {
 // Page.Data contains content fields only — Site, Theme, RootItems,
 // and other template context are not present until the Write phase.
 type Page struct {
-	Config    config.ItemConfig
+	Config    config.NodeConfig
 	Data      map[string]any
 	CardSpecs []CardSpec
 	Ancestors []map[string]any
@@ -38,12 +38,12 @@ type AssemblyContext struct {
 	Cfg          *config.SiteConfig
 }
 
-// assembleTree assembles a slice of LoadedItems into a Page tree.
+// assembleTree assembles a slice of LoadedNodes into a Page tree.
 // assembleTree is a pure function — no IO, no error path.
-func assembleTree(items []LoadedItem, ctx AssemblyContext, ancestors []map[string]any) []Page {
+func assembleTree(items []LoadedNode, ctx AssemblyContext, ancestors []map[string]any) []Page {
 	pages := make([]Page, 0, len(items))
 	for _, item := range items {
-		page, ok := assembleItem(item, ctx, ancestors)
+		page, ok := assembleNode(item, ctx, ancestors)
 		if !ok {
 			continue // draft
 		}
@@ -52,9 +52,9 @@ func assembleTree(items []LoadedItem, ctx AssemblyContext, ancestors []map[strin
 	return pages
 }
 
-// assembleItem assembles a single LoadedItem and its descendants into a Page.
+// assembleNode assembles a single LoadedNode and its descendants into a Page.
 // Returns ok=false when the item is a draft and drafts are not enabled.
-func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]any) (Page, bool) {
+func assembleNode(item LoadedNode, ctx AssemblyContext, ancestors []map[string]any) (Page, bool) {
 	if isDraft(item.Data) && !ctx.Cfg.Drafts {
 		return Page{}, false
 	}
@@ -74,7 +74,7 @@ func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]a
 		e.data["outputPath"] = cp.Config.OutputPath
 		e.data["count"] = len(cp.Children)
 		if len(cp.Children) > 0 {
-			e.data["List"] = cp.CardSpecs
+			e.data["Children"] = cp.CardSpecs
 		}
 		entries = append(entries, e)
 	}
@@ -99,9 +99,9 @@ func assembleItem(item LoadedItem, ctx AssemblyContext, ancestors []map[string]a
 	}, true
 }
 
-// cardEntry pairs an ItemConfig with the data needed for card rendering.
+// cardEntry pairs a NodeConfig with the data needed for card rendering.
 type cardEntry struct {
-	cfg  config.ItemConfig
+	cfg  config.NodeConfig
 	data map[string]any
 }
 
@@ -115,7 +115,7 @@ func appendAncestor(ancestors []map[string]any, title, outputPath string) []map[
 
 // buildCardSpecs builds a CardSpec for each entry using the parent's card
 // template, which individual entries may override via a "cardTemplate" field.
-func buildCardSpecs(parent config.ItemConfig, entries []cardEntry) []CardSpec {
+func buildCardSpecs(parent config.NodeConfig, entries []cardEntry) []CardSpec {
 	specs := make([]CardSpec, 0, len(entries))
 	for _, e := range entries {
 		cardTemplate := parent.CardTemplate

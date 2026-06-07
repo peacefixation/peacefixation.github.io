@@ -116,7 +116,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 	}
 	defer fw.Close()
 
-	paths, err := collectWatchPaths(cfg.TemplateDir, cfg.ContentDir, cfg.ThemesDir, cfg.ItemsDir, cfgFile)
+	paths, err := collectWatchPaths(cfg.TemplateDir, cfg.ContentDir, cfg.ThemesDir, cfg.TypesDir, cfgFile)
 	if err != nil {
 		return fmt.Errorf("collecting watch paths: %w", err)
 	}

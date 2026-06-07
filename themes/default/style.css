@@ -174,7 +174,7 @@ blockquote {
 /* === List === */
 .list {
   display: grid;
-  gap: 0.875rem;
+  gap: 1.5rem;
   padding-block: 0 2.5rem;
 }
 

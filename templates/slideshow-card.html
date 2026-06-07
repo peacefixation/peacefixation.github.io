@@ -1,7 +1,7 @@
 {{define "slideshow-card.html"}}
 <div class="slideshow" data-slideshow>
   <div class="slideshow-track">
-    {{range .List}}{{.}}{{end}}
+    {{range .Children}}{{.}}{{end}}
   </div>
   <button class="slideshow-btn slideshow-prev" aria-label="Previous photo">&#8249;</button>
   <button class="slideshow-btn slideshow-next" aria-label="Next photo">&#8250;</button>

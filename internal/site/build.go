@@ -13,13 +13,13 @@ import (
 )
 
 // Build runs the full build pipeline for cfg, writing pages to cfg.OutputDir.
-// It returns the total number of pages written across all items.
+// It returns the total number of pages written across all nodes.
 //
 // Pipeline:
 //
-//	Scan  (IO)  → []ItemConfig
-//	Load  (IO)  → []LoadedItem
-//	Enrich(IO)  → []LoadedItem (enriched in place)
+//	Scan  (IO)  → []NodeConfig
+//	Load  (IO)  → []LoadedNode
+//	Enrich(IO)  → []LoadedNode (enriched in place)
 //	Assemble    → []Page        (pure — no IO)
 //	Write (IO)  → HTML files on disk
 func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (int, error) {
@@ -51,13 +51,13 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 	defer cleanup()
 
 	// Phase 1: Scan — walk the content directory and build an ItemConfig tree.
-	scannedItems, err := scanDir(cfg.ContentDir, "", cfg, listMeta{})
+	scannedItems, err := scanDir(cfg.ContentDir, "", cfg, nodeMeta{})
 	if err != nil {
 		return 0, err
 	}
 
 	// Phase 2: Load — fetch data for every item; apply type defaults and sub-lists.
-	loadedItems, err := loadTree(scannedItems, registry, cfg.ItemsDir, cfg)
+	loadedItems, err := loadTree(scannedItems, registry, cfg.TypesDir, cfg)
 	if err != nil {
 		return 0, err
 	}
@@ -68,7 +68,7 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 	// Tags are collected from the already-loaded tree — no re-fetching.
 	if cfg.Tags.Enabled {
 		tagMap := collectTags(loadedItems, nil)
-		loadedItems = append(loadedItems, buildTagsItem(tagMap, cfg))
+		loadedItems = append(loadedItems, buildTagsNode(tagMap, cfg))
 	}
 
 	// Copy static assets (e.g. images for photo lists) to the output directory.
@@ -79,7 +79,7 @@ func Build(cfg *config.SiteConfig, registry *datasource.Registry, clean bool) (i
 	rootNavItems := buildRootNav(loadedItems)
 	var siteMap []config.SiteMapNode
 	if cfg.SiteMap {
-		siteMap = buildSiteMap(loadedItems, cfg.ItemsDir)
+		siteMap = buildSiteMap(loadedItems, cfg.TypesDir)
 	}
 
 	// Phase 4: Assemble — pure; no IO, no renderer dependency.
@@ -110,7 +110,7 @@ func setupOutput(cfg *config.SiteConfig, clean bool) error {
 
 // buildRootNav returns nav metadata for all root items, filtering out the
 // homepage — the site title serves as the home link in the global nav.
-func buildRootNav(items []LoadedItem) []map[string]any {
+func buildRootNav(items []LoadedNode) []map[string]any {
 	all := buildNavItems(items)
 	nav := make([]map[string]any, 0, len(all))
 	for _, item := range all {
@@ -161,11 +161,11 @@ func loadTheme(cfg *config.SiteConfig) (theme.Data, string, error) {
 	return theme.BuildData(themeCfg), theme.TemplateDir(themeDir), nil
 }
 
-// copyAssetsFromTree walks the LoadedItem tree and calls CopyAssets on any list
+// copyAssetsFromTree walks the LoadedNode tree and calls CopyAssets on any list
 // whose type is registered as an AssetCopier plugin.
-func copyAssetsFromTree(items []LoadedItem, outputDir string) error {
+func copyAssetsFromTree(items []LoadedNode, outputDir string) error {
 	for _, item := range items {
-		if p, ok := listPlugins[item.Config.ListType]; ok {
+		if p, ok := nodePlugins[item.Config.Scanner]; ok {
 			if copier, ok := p.(AssetCopier); ok {
 				srcDir := filepath.Dir(item.Config.DataSource.Path)
 				destDir := filepath.Join(outputDir, filepath.Dir(item.Config.OutputPath))

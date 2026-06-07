@@ -9,74 +9,62 @@ import (
 	"github.com/peacefixation/ssg/internal/datasource"
 )
 
-// LoadedItem is the output of the Load phase: an ItemConfig with its data
-// fetched from the datasource, type defaults applied, and sub-list
-// declarations in the data resolved into children.
-type LoadedItem struct {
-	Config   config.ItemConfig
+// LoadedNode is the output of the Load phase: a NodeConfig with its data
+// fetched from the datasource, type defaults applied, and any template
+// override in the data resolved.
+type LoadedNode struct {
+	Config   config.NodeConfig
 	Data     map[string]any
-	Children []LoadedItem
+	Children []LoadedNode
 }
 
-// loadTree fetches data for every item in the tree and returns a parallel tree
-// of LoadedItems. For each item: datasource is created, FetchOne is called,
-// item-type defaults are applied, the icon default is set, any template
-// override in the data is applied, and sub-lists declared via a "lists" field
-// are scanned and appended as children.
-func loadTree(items []config.ItemConfig, registry *datasource.Registry, itemsDir string, cfg *config.SiteConfig) ([]LoadedItem, error) {
-	loaded := make([]LoadedItem, 0, len(items))
-	for _, itemCfg := range items {
-		ds, err := registry.New(itemCfg.DataSource)
+// loadTree fetches data for every node in the tree and returns a parallel tree
+// of LoadedNodes. For each node: datasource is created, FetchOne is called,
+// node-type defaults are applied, the icon default is set, and any template
+// override in the data is applied.
+func loadTree(items []config.NodeConfig, registry *datasource.Registry, typesDir string, cfg *config.SiteConfig) ([]LoadedNode, error) {
+	loaded := make([]LoadedNode, 0, len(items))
+	for _, nodeCfg := range items {
+		ds, err := registry.New(nodeCfg.DataSource)
 		if err != nil {
-			return nil, fmt.Errorf("creating datasource for %q: %w", itemCfg.Name, err)
+			return nil, fmt.Errorf("creating datasource for %q: %w", nodeCfg.Name, err)
 		}
 		data, err := ds.FetchOne()
 		if err != nil {
-			return nil, fmt.Errorf("fetching data for %q: %w", itemCfg.Name, err)
+			return nil, fmt.Errorf("fetching data for %q: %w", nodeCfg.Name, err)
 		}
 
-		// Apply item-type defaults.
+		// Apply node-type defaults.
 		if typeName, ok := data["type"].(string); ok && typeName != "" {
-			if defaults := loadItemTypeDefaults(itemsDir, typeName); defaults != nil {
+			if defaults := loadTypeDefaults(typesDir, typeName); defaults != nil {
 				applyTypeDefaults(data, defaults)
 			}
 		}
 
-		// Allow item data to override the template.
+		// Allow node data to override the template.
 		if tmpl, ok := data["template"].(string); ok && tmpl != "" {
-			itemCfg.Template = tmpl
+			nodeCfg.Template = tmpl
 		}
 
-		// Set a default icon if the item does not supply one.
+		// Set a default icon if the node does not supply one.
 		if _, ok := data["icon"]; !ok {
-			if strings.HasSuffix(itemCfg.DataSource.Path, "list.yaml") {
+			if strings.HasSuffix(nodeCfg.DataSource.Path, "node.yaml") {
 				data["icon"] = "list"
 			} else {
-				ext := strings.ToLower(filepath.Ext(itemCfg.DataSource.Path))
+				ext := strings.ToLower(filepath.Ext(nodeCfg.DataSource.Path))
 				if ext == ".md" || ext == ".markdown" {
 					data["icon"] = "post"
 				}
 			}
 		}
 
-		// Add any sub-lists named in the item's "lists" field as additional children.
-		childConfigs := itemCfg.Children
-		if rawLists, ok := data["lists"].([]any); ok {
-			subListConfigs, err := scanSubLists(rawLists, itemCfg, cfg)
-			if err != nil {
-				return nil, err
-			}
-			childConfigs = append(childConfigs, subListConfigs...)
-			delete(data, "lists")
-		}
-
-		children, err := loadTree(childConfigs, registry, itemsDir, cfg)
+		children, err := loadTree(nodeCfg.Children, registry, typesDir, cfg)
 		if err != nil {
 			return nil, err
 		}
 
-		loaded = append(loaded, LoadedItem{
-			Config:   itemCfg,
+		loaded = append(loaded, LoadedNode{
+			Config:   nodeCfg,
 			Data:     data,
 			Children: children,
 		})
@@ -84,30 +72,3 @@ func loadTree(items []config.ItemConfig, registry *datasource.Registry, itemsDir
 	return loaded, nil
 }
 
-// scanSubLists scans sibling directories named in rawLists and returns them
-// as additional ItemConfigs to append to the parent item's children.
-func scanSubLists(rawLists []any, itemCfg config.ItemConfig, cfg *config.SiteConfig) ([]config.ItemConfig, error) {
-	stem := stemOf(itemCfg.DataSource.Path)
-	siblingDir := filepath.Join(filepath.Dir(itemCfg.DataSource.Path), stem)
-	outputPrefix := strings.TrimSuffix(itemCfg.OutputPath, "index.html")
-	var extra []config.ItemConfig
-	for _, raw := range rawLists {
-		name, _ := raw.(string)
-		if name == "" {
-			continue
-		}
-		sub, ok, err := scanDirItem(siblingDir, name, outputPrefix, cfg, listMeta{
-			CardTemplate: itemCfg.CardTemplate,
-			SortBy:       itemCfg.SortBy,
-			SortOrder:    itemCfg.SortOrder,
-			Limit:        itemCfg.Limit,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("scanning sub-list %q of %q: %w", name, itemCfg.Name, err)
-		}
-		if ok {
-			extra = append(extra, sub)
-		}
-	}
-	return extra, nil
-}

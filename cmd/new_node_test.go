@@ -142,19 +142,19 @@ func TestCreateList_InheritsParentCardTemplate(t *testing.T) {
 		t.Fatal(err)
 	}
 	parentYAML := "title: Music\ncardTemplate: embed-card.html\ntypes:\n  - soundcloud\n  - youtube\n"
-	if err := os.WriteFile(filepath.Join(parentDir, "list.yaml"), []byte(parentYAML), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(parentDir, "node.yaml"), []byte(parentYAML), 0644); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := createList(testSiteConfig(contentDir), "music/artist", newListConfig{Title: "Artist"}); err != nil {
-		t.Fatalf("createList: %v", err)
+	if err := createBranchNode(testSiteConfig(contentDir), "music/artist", branchNodeConfig{Title: "Artist"}); err != nil {
+		t.Fatalf("createBranchNode: %v", err)
 	}
 
-	data, err := os.ReadFile(filepath.Join(contentDir, "music", "artist", "list.yaml"))
+	data, err := os.ReadFile(filepath.Join(contentDir, "music", "artist", "node.yaml"))
 	if err != nil {
-		t.Fatalf("reading list.yaml: %v", err)
+		t.Fatalf("reading node.yaml: %v", err)
 	}
-	var got newListConfig
+	var got branchNodeConfig
 	if err := yaml.Unmarshal(data, &got); err != nil {
 		t.Fatalf("unmarshalling: %v", err)
 	}
@@ -175,20 +175,20 @@ func TestCreateList_ExplicitFlagOverridesParent(t *testing.T) {
 		t.Fatal(err)
 	}
 	parentYAML := "title: Music\ncardTemplate: embed-card.html\n"
-	if err := os.WriteFile(filepath.Join(parentDir, "list.yaml"), []byte(parentYAML), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(parentDir, "node.yaml"), []byte(parentYAML), 0644); err != nil {
 		t.Fatal(err)
 	}
 
-	lc := newListConfig{Title: "Artist", CardTemplate: "custom-card.html"}
-	if err := createList(testSiteConfig(contentDir), "music/artist", lc); err != nil {
-		t.Fatalf("createList: %v", err)
+	lc := branchNodeConfig{Title: "Artist", CardTemplate: "custom-card.html"}
+	if err := createBranchNode(testSiteConfig(contentDir), "music/artist", lc); err != nil {
+		t.Fatalf("createBranchNode: %v", err)
 	}
 
-	data, err := os.ReadFile(filepath.Join(contentDir, "music", "artist", "list.yaml"))
+	data, err := os.ReadFile(filepath.Join(contentDir, "music", "artist", "node.yaml"))
 	if err != nil {
-		t.Fatalf("reading list.yaml: %v", err)
+		t.Fatalf("reading node.yaml: %v", err)
 	}
-	var got newListConfig
+	var got branchNodeConfig
 	if err := yaml.Unmarshal(data, &got); err != nil {
 		t.Fatalf("unmarshalling: %v", err)
 	}
@@ -197,7 +197,7 @@ func TestCreateList_ExplicitFlagOverridesParent(t *testing.T) {
 	}
 }
 
-// --- createList with file item parent ---
+// --- createBranchNode with file item parent ---
 
 func testSiteConfig(contentDir string) *config.SiteConfig {
 	return &config.SiteConfig{ContentDir: contentDir}
@@ -209,7 +209,7 @@ func mustMkListDir(t *testing.T, dir, title string) {
 		t.Fatal(err)
 	}
 	data, _ := yaml.Marshal(map[string]any{"title": title})
-	if err := os.WriteFile(filepath.Join(dir, "list.yaml"), data, 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "node.yaml"), data, 0644); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -223,12 +223,12 @@ func TestCreateList_FileItemParent_CreatesSubListAndUpdatesFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := createList(testSiteConfig(contentDir), testItemSlug+"/"+testListA, newListConfig{Title: "List A"}); err != nil {
-		t.Fatalf("createList: %v", err)
+	if err := createBranchNode(testSiteConfig(contentDir), testItemSlug+"/"+testListA, branchNodeConfig{Title: "List A"}); err != nil {
+		t.Fatalf("createBranchNode: %v", err)
 	}
 
-	if _, err := os.Stat(filepath.Join(contentDir, testItemSlug, testListA, "list.yaml")); err != nil {
-		t.Errorf("expected sub-list list.yaml: %v", err)
+	if _, err := os.Stat(filepath.Join(contentDir, testItemSlug, testListA, "node.yaml")); err != nil {
+		t.Errorf("expected sub-node node.yaml: %v", err)
 	}
 	meta := readFileItemMeta(filepath.Join(contentDir, testItemSlug+".yaml"))
 	if len(meta.Lists) != 1 || meta.Lists[0] != testListA {
@@ -245,8 +245,8 @@ func TestCreateList_FileItemParent_SiblingDirCreatedWhenMissing(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := createList(testSiteConfig(contentDir), testItemSlug+"/"+testListA, newListConfig{Title: "List A"}); err != nil {
-		t.Fatalf("createList: %v", err)
+	if err := createBranchNode(testSiteConfig(contentDir), testItemSlug+"/"+testListA, branchNodeConfig{Title: "List A"}); err != nil {
+		t.Fatalf("createBranchNode: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(contentDir, testItemSlug)); err != nil {
 		t.Errorf("expected sibling dir to be created: %v", err)
@@ -263,8 +263,8 @@ func TestCreateList_FileItemParent_SecondSubList(t *testing.T) {
 	}
 	mustMkListDir(t, filepath.Join(contentDir, testItemSlug, testListA), "List A")
 
-	if err := createList(testSiteConfig(contentDir), testItemSlug+"/"+testListB, newListConfig{Title: "List B"}); err != nil {
-		t.Fatalf("createList: %v", err)
+	if err := createBranchNode(testSiteConfig(contentDir), testItemSlug+"/"+testListB, branchNodeConfig{Title: "List B"}); err != nil {
+		t.Fatalf("createBranchNode: %v", err)
 	}
 	meta := readFileItemMeta(filepath.Join(contentDir, testItemSlug+".yaml"))
 	if len(meta.Lists) != 2 {
