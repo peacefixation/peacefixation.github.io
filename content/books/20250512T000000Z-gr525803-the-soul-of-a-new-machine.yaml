@@ -3,7 +3,8 @@ date_read: '2025-05-12'
 my_rating: 5
 status: read
 tags:
-- computing
+  - computing
+  - technology
 title: The Soul of a New Machine
 type: book
 url: https://www.goodreads.com/book/show/7090.The_Soul_of_a_New_Machine

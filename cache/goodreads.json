@@ -49,7 +49,7 @@
   },
   "https://www.goodreads.com/book/show/10888677": {
     "fetchedAt": "2026-05-31T01:59:38.257850794Z",
-    "title": "A Game of Thrones (A Song of Ice and Fire, #1)",
+    "title": "A Game of Thrones (A Song of Ice and Fire)",
     "author": "George R.R. Martin",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1327961282i/10888677.jpg",
     "rating": "4.45"
@@ -104,7 +104,7 @@
   },
   "https://www.goodreads.com/book/show/122": {
     "fetchedAt": "2026-05-31T01:59:08.28269942Z",
-    "title": "The Power of One (The Power of One, #1)",
+    "title": "The Power of One",
     "author": "Bryce Courtenay",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1388184360i/122.jpg",
     "isbn": "9780345410054",
@@ -184,7 +184,7 @@
   },
   "https://www.goodreads.com/book/show/13227454": {
     "fetchedAt": "2026-05-31T01:55:52.640524078Z",
-    "title": "The Unlikely Pilgrimage of Harold Fry (Harold Fry, #1)",
+    "title": "The Unlikely Pilgrimage of Harold Fry",
     "author": "Rachel Joyce",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1335816092i/13227454.jpg",
     "isbn": "9780812993295",
@@ -481,7 +481,7 @@
   },
   "https://www.goodreads.com/book/show/186190": {
     "fetchedAt": "2026-05-31T01:57:00.1808655Z",
-    "title": "Forrest Gump (Forrest Gump, #1)",
+    "title": "Forrest Gump",
     "author": "Winston Groom",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1385313197i/186190.jpg",
     "isbn": "9780743453257",
@@ -1368,7 +1368,7 @@
   },
   "https://www.goodreads.com/book/show/612963": {
     "fetchedAt": "2026-05-31T01:58:22.555994446Z",
-    "title": "Do Androids Dream of Electric Sheep? (Blade Runner #1)",
+    "title": "Do Androids Dream of Electric Sheep?",
     "author": "Philip K. Dick",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1390760148i/612963.jpg",
     "isbn": "9780575079939",
@@ -1392,7 +1392,7 @@
   },
   "https://www.goodreads.com/book/show/629": {
     "fetchedAt": "2026-05-31T01:57:49.612154527Z",
-    "title": "Zen and the Art of Motorcycle Maintenance: An Inquiry Into Values (Phaedrus, #1)",
+    "title": "Zen and the Art of Motorcycle Maintenance: An Inquiry Into Values",
     "author": "Robert M. Pirsig",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1410136019i/629.jpg",
     "isbn": "9780060589462",
@@ -1502,7 +1502,7 @@
   },
   "https://www.goodreads.com/book/show/682803": {
     "fetchedAt": "2026-05-31T01:59:41.842208188Z",
-    "title": "The Gulag Archipelago, 1918-1956 (The Gulag Archipelago 1918-1956, #1-7)",
+    "title": "The Gulag Archipelago, 1918-1956",
     "author": "Aleksandr Solzhenitsyn",
     "cover": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1347431378i/682803.jpg",
     "isbn": "9781843430858",
